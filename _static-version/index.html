@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fawwaz Akbar Wibowo — Portfolio</title>
+  <meta name="description" content="Fawwaz Akbar Wibowo — Software Engineering student building web & mobile apps with a focus on frontend, UI/UX and AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="topbar">
+  <!-- Ticker -->
+  <div class="ticker" aria-label="Highlights">
+    <div class="ticker__track">
+      <span>✦ 1st Place — INDES 2026, Malaysia</span>
+      <span>✦ 2nd Place — Codelab TechSprint Innovation Cup 2026</span>
+      <span>✦ Open to internships &amp; freelance</span>
+      <span>✦ Makassar → Yogyakarta → Nanjing</span>
+      <span>✦ 1st Place — INDES 2026, Malaysia</span>
+      <span>✦ 2nd Place — Codelab TechSprint Innovation Cup 2026</span>
+      <span>✦ Open to internships &amp; freelance</span>
+      <span>✦ Makassar → Yogyakarta → Nanjing</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <header class="nav">
+    <a href="#top" class="nav__logo">FW<span>.</span></a>
+    <nav>
+      <ul class="nav__links">
+        <li><a href="#work" class="roll" data-text="Work"><span>Work</span></a></li>
+        <li><a href="#about" class="roll" data-text="About"><span>About</span></a></li>
+        <li><a href="#experience" class="roll" data-text="Experience"><span>Experience</span></a></li>
+        <li><a href="#contact" class="roll" data-text="Contact"><span>Contact</span></a></li>
+      </ul>
+    </nav>
+    <button class="theme-toggle" aria-label="Toggle dark mode">◐</button>
+  </header>
+  </div>
+
+  <div id="smooth-wrapper">
+  <div id="smooth-content">
+  <main id="top">
+
+    <!-- Hero -->
+    <!-- Opening scene (scroll-driven, pinned) -->
+    <section class="stage" aria-label="Intro">
+      <div class="stage__words" aria-hidden="true">
+        <span class="stage__word" lang="zh">你好</span>
+        <span class="stage__word" lang="id">halo</span>
+        <span class="stage__word">hello</span>
+      </div>
+      <div class="stage__route" aria-hidden="true">
+        <span class="stage__line"></span>
+        <span class="stage__stop"><i></i>Makassar</span>
+        <span class="stage__stop"><i></i>Yogyakarta</span>
+        <span class="stage__stop"><i></i>Nanjing</span>
+      </div>
+      <div class="stage__photo">
+        <!-- Replace with: <img src="images/me.webp" alt="Portrait of Fawwaz Akbar Wibowo"> -->
+        <span>your photo</span>
+      </div>
+      <h2 class="stage__name">I'm Fawwaz.</h2>
+      <p class="stage__byline"><span class="stage__typed">frontend developer · ui/ux designer · ai tinkerer</span><span class="stage__caret" aria-hidden="true"></span></p>
+      <p class="stage__hint" aria-hidden="true">scroll ↓</p>
+    </section>
+
+    <section class="hero">
+      <p class="hero__hello reveal"><span id="greet">Hello</span>, I'm Fawwaz Akbar Wibowo —</p>
+      <h1 class="hero__title reveal">
+        <span class="line">I build apps</span>
+        <span class="line">&amp; interfaces that</span>
+        <span class="line">feel <span class="swap" aria-live="polite"><span id="swap-word">intuitive</span></span>.</span>
+      </h1>
+      <div class="hero__meta reveal">
+        <div class="hero__photo" aria-hidden="true">
+          <!-- Replace with: <img src="images/me.webp" alt="Portrait of Fawwaz Akbar Wibowo"> -->
+          <span>your photo</span>
+        </div>
+        <p>Software Engineering student in a 2+2 Double Degree program between <strong>Universitas Islam Indonesia</strong> and <strong>Nanjing Xiaozhuang University</strong>. Frontend, UI/UX &amp; AI integration.</p>
+        <a href="#work" class="btn">See my work <span aria-hidden="true">↘</span></a>
+      </div>
+    </section>
+
+    <!-- About / Skills -->
+    <section class="about" id="about">
+      <p class="label">(01) About</p>
+      <p class="about__statement">
+        From Makassar to Nanjing, I design <em>user-centered</em> interfaces and build web &amp; mobile apps — with a soft spot for AI and the Mandarin language.
+      </p>
+
+      <div class="stats reveal">
+        <div><strong>2×</strong><span>Competition podiums in 2026</span></div>
+        <div><strong>10+</strong><span>Web, mobile &amp; AI projects shipped</span></div>
+        <div><strong>3</strong><span>Languages — ID · EN · 中文</span></div>
+      </div>
+
+      <div class="skills reveal">
+        <div class="skills__group">
+          <h3>Frontend</h3>
+          <ul class="services"><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li></ul>
+        </div>
+        <div class="skills__group">
+          <h3>Mobile</h3>
+          <ul class="services"><li>SwiftUI</li><li>Core ML</li><li>Flutter</li></ul>
+        </div>
+        <div class="skills__group">
+          <h3>Backend</h3>
+          <ul class="services"><li>Java</li><li>Spring Boot</li><li>FastAPI</li><li>MySQL</li><li>Supabase</li></ul>
+        </div>
+        <div class="skills__group">
+          <h3>AI &amp; Design</h3>
+          <ul class="services"><li>GPT-4o mini</li><li>A2A JSON-RPC 2.0</li><li>Figma</li><li>UI/UX Prototyping</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scroll-driven big text -->
+    <div class="bigline" aria-hidden="true">
+      <div class="bigline__track">Frontend <em>✦</em> UI/UX <em>✦</em> Mobile <em>✦</em> AI <em>✦</em> Frontend <em>✦</em> UI/UX <em>✦</em> Mobile <em>✦</em> AI <em>✦</em></div>
+    </div>
+
+    <!-- Work -->
+    <section class="work" id="work">
+      <p class="label">(02) Selected work</p>
+      <ol class="work__list">
+        <li class="project reveal" data-color="#ff5b2e" data-label="Civic-tech">
+          <a href="https://github.com/fawwaz2828" target="_blank" rel="noopener">
+            <span class="project__no">01</span>
+            <span class="project__body">
+              <span class="project__name">KawalBijak</span>
+              <span class="project__desc">Civic-tech platform making Indonesian fiscal &amp; monetary policy accessible. Led the frontend — Next.js 15, React 19, Supabase. 🥈 2nd Place, Codelab TechSprint 2026.</span>
+            </span>
+            <span class="project__tag">Frontend Lead · 2026</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li class="project reveal" data-color="#3b5bfd" data-label="Mobile">
+          <a href="https://github.com/fawwaz2828" target="_blank" rel="noopener">
+            <span class="project__no">02</span>
+            <span class="project__body">
+              <span class="project__name">Electrovice</span>
+              <span class="project__desc">Flutter mobile app built for INDES 2026 in Malaysia — GetX, Firebase &amp; Mapbox. Development, UI/UX and QA. 🥇 1st Place.</span>
+            </span>
+            <span class="project__tag">Mobile Dev · 2026</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li class="project reveal" data-color="#12b886" data-label="iOS + AI">
+          <a href="https://github.com/fawwaz2828" target="_blank" rel="noopener">
+            <span class="project__no">03</span>
+            <span class="project__body">
+              <span class="project__name">AI Fitness Coach</span>
+              <span class="project__desc">Native SwiftUI app analyzing posture &amp; movement on-device with Apple Vision and Core ML, with AI coaching reports from a FastAPI multi-agent backend.</span>
+            </span>
+            <span class="project__tag">iOS App · 2026</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li class="project reveal" data-color="#f7b500" data-label="Enterprise web">
+          <a href="https://github.com/fawwaz2828" target="_blank" rel="noopener">
+            <span class="project__no">04</span>
+            <span class="project__body">
+              <span class="project__name">SNE-SPIMS</span>
+              <span class="project__desc">Student progress &amp; information system for special-needs schools — role-based access, IEPs, therapy scheduling, parent–teacher messaging. Spring Boot 3, MySQL 8.</span>
+            </span>
+            <span class="project__tag">Web App · 2026</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li class="project reveal" data-color="#e64980" data-label="iOS + AI">
+          <a href="https://github.com/fawwaz2828" target="_blank" rel="noopener">
+            <span class="project__no">05</span>
+            <span class="project__body">
+              <span class="project__name">FoodScan</span>
+              <span class="project__desc">SwiftUI calorie tracker with AI food analysis and personalized calorie goals.</span>
+            </span>
+            <span class="project__tag">iOS App · 2026</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li class="project reveal" data-color="#7950f2" data-label="Web">
+          <a href="https://github.com/fawwaz2828" target="_blank" rel="noopener">
+            <span class="project__no">06</span>
+            <span class="project__body">
+              <span class="project__name">CrimeWatch</span>
+              <span class="project__desc">Platform assessing crime-risk levels in tourist areas. Frontend in Next.js &amp; TypeScript.</span>
+            </span>
+            <span class="project__tag">Frontend · 2025</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li class="project reveal" data-color="#0ca678" data-label="Landing page">
+          <a href="https://larisinai.id" target="_blank" rel="noopener">
+            <span class="project__no">07</span>
+            <span class="project__body">
+              <span class="project__name">larisinai.id</span>
+              <span class="project__desc">Landing page for an AI business assistant that helps businesses on WhatsApp &amp; Instagram.</span>
+            </span>
+            <span class="project__tag">Freelance · 2025</span>
+            <span class="project__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      </ol>
+
+      <details class="more reveal">
+        <summary>More projects</summary>
+        <ul>
+          <li><span>Sustain Energy Solutions</span> E-commerce for smart lighting &amp; installation services — PHP, MySQL</li>
+          <li><span>HerPathway</span> Mentoring platform for women in STEM — Java, MySQL</li>
+          <li><span>Maintance</span> Building maintenance management app — Figma prototype</li>
+          <li><span>DPM UII Website</span> Developed &amp; managed the official site (dpm.uii.ac.id) — WordPress</li>
+        </ul>
+      </details>
+
+    </section>
+
+    <!-- Experience -->
+    <section class="experience" id="experience">
+      <p class="label">(03) Experience &amp; education</p>
+      <div class="timeline">
+        <div class="timeline__col">
+          <h3 class="timeline__heading">Education</h3>
+          <div class="entry reveal">
+            <span class="entry__date">Sep 2025 — Now</span>
+            <h4>Nanjing Xiaozhuang University</h4>
+            <p>B.Eng Software Engineering (2+2 Double Degree) · Nanjing, China</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">2023 — 2025</span>
+            <h4>Universitas Islam Indonesia</h4>
+            <p>Bachelor of Informatics · Yogyakarta</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">2020 — 2023</span>
+            <h4>SMK Telkom Makassar</h4>
+            <p>Vocational high school</p>
+          </div>
+        </div>
+        <div class="timeline__col">
+          <h3 class="timeline__heading">Work &amp; leadership</h3>
+          <div class="entry reveal">
+            <span class="entry__date">2026 — Now</span>
+            <h4>Media &amp; Creative Leader</h4>
+            <p>Ikatan Mahasiswa Indonesia Xiaozhuang (IMIX)</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">2025 — 2026</span>
+            <h4>Freelance Web Developer</h4>
+            <p>React interfaces, landing pages &amp; WordPress sites</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">2024 — 2025</span>
+            <h4>Administration &amp; Information Media Staff</h4>
+            <p>DSJ DPM UII — content, live coverage &amp; website</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">2024 — 2025</span>
+            <h4>Islamic Studies &amp; Cadre Development</h4>
+            <p>Himpunan Mahasiswa Islam FTI UII</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">2024</span>
+            <h4>PR Staff · INPUT &amp; Security Staff · PESONA Ta'aruf</h4>
+            <p>Universitas Islam Indonesia</p>
+          </div>
+          <div class="entry reveal">
+            <span class="entry__date">Mar — May 2022</span>
+            <h4>Administration &amp; Operations Intern</h4>
+            <p>Telkom Property</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+      <p class="label">(04) Quick answers</p>
+      <div class="faq__list">
+        <details class="reveal">
+          <summary><span>01</span>What are you looking for right now?</summary>
+          <p>Internships and freelance projects in frontend development, UI/UX or mobile — remote or on-site.</p>
+        </details>
+        <details class="reveal">
+          <summary><span>02</span>What's your go-to stack?</summary>
+          <p>Next.js, React and TypeScript with Tailwind for the web; SwiftUI or Flutter for mobile; Spring Boot or FastAPI on the backend; Figma for design.</p>
+        </details>
+        <details class="reveal">
+          <summary><span>03</span>Can you work with AI features?</summary>
+          <p>Yes — I've built on-device ML with Core ML and Apple Vision, and integrated LLMs like GPT-4o mini through multi-agent (A2A JSON-RPC 2.0) backends.</p>
+        </details>
+        <details class="reveal">
+          <summary><span>04</span>Which languages do you speak?</summary>
+          <p>Indonesian (native), English (fluent) and Mandarin (basic — improving every day in Nanjing).</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+      <p class="label">(05) Contact</p>
+      <h2 class="contact__title reveal">Let's build<br><em>something</em> together.</h2>
+      <a class="contact__mail reveal" href="mailto:fawwazwibowo96@gmail.com">fawwazwibowo96@gmail.com</a>
+      <ul class="socials reveal">
+        <li><a href="https://www.linkedin.com/in/fawwaz-wibowo-a69886448" target="_blank" rel="noopener" class="roll" data-text="LinkedIn"><span>LinkedIn</span></a></li>
+        <li><a href="https://github.com/fawwaz2828" target="_blank" rel="noopener" class="roll" data-text="GitHub"><span>GitHub</span></a></li>
+        <li><a href="FawwazAkbarWibowoCV.pdf" target="_blank" class="roll" data-text="Download CV"><span>Download CV</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__index">
+      <a href="#about"><span>01</span>About</a>
+      <a href="#work"><span>02</span>Work</a>
+      <a href="#experience"><span>03</span>Experience</a>
+      <a href="#faq"><span>04</span>FAQ</a>
+      <a href="#contact"><span>05</span>Contact</a>
+    </div>
+    <div class="footer__bottom">
+      <p>© <span id="year"></span> Fawwaz Akbar Wibowo</p>
+      <a href="#top" class="roll" data-text="Back to top ↑"><span>Back to top ↑</span></a>
+    </div>
+    <p class="footer__big" aria-hidden="true">FAWWAZ</p>
+  </footer>
+  </div>
+  </div>
+
+  <div class="preview" aria-hidden="true"><span></span></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

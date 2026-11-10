@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#171717" />
+    <!-- Tab icon: FW logo (from public/images/fw.png) on the dark surface -->
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script>
+      // Apply the saved language before first paint
+      try { if (localStorage.getItem("lang") === "zh") document.documentElement.lang = "zh-CN"; } catch (e) {}
+    </script>
+    <title>Fawwaz Akbar Wibowo — Portfolio</title>
+    <meta name="description" content="Fawwaz Akbar Wibowo — Software Engineering student building web & mobile apps with a focus on frontend, UI/UX and AI." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100..900&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;700;800&family=Space+Grotesk:wght@300..700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300..700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
