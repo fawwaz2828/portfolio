@@ -5,7 +5,7 @@ import SpartanHelmet from "./motion/SpartanHelmet";
 import { tokens, useLang } from "../i18n";
 import { Link } from "../router";
 
-const PHOTO = "/images/me.png";
+const PHOTO = "/images/me.jpg";
 
 /**
  * About content, shown as the second stage of the pinned hero (see Hero +
@@ -60,7 +60,9 @@ export default function About({ standalone = false }: { standalone?: boolean }) 
 
           <div className="about__body">
             {t.about.paras.map((p, i) => (
-              <p key={`${lang}-${i}`} className={`about__para${i > 0 ? " about__para--end" : ""}`} aria-label={p}>
+              <p key={`${lang}-${i}`} className={`about__para${i > 0 ? " about__para--end" : ""}`}>
+                {/* screen readers get the sentence once; the animated words are hidden from them */}
+                <span className="sr-only">{p}</span>
                 {tokens(p, lang).map((w, j) => (
                   <Fragment key={j}>
                     <span className="hero__word" data-word aria-hidden="true">{w}</span>{gap}

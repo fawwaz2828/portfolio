@@ -121,8 +121,8 @@ export default function AboutPage() {
               animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
               transition={{ duration: 1.2, ease: EASE, delay: 0.6 }}
             >
-              <img src="/images/me.png" alt={t.about.photoAlt} decoding="async" />
-              <AsciiOverlay src="/images/me.png" />
+              <img src="/images/me.jpg" alt={t.about.photoAlt} decoding="async" />
+              <AsciiOverlay src="/images/me.jpg" />
               <figcaption className="ab-photo__tag">(FW)</figcaption>
             </motion.figure>
             <dl className="ab-facts">

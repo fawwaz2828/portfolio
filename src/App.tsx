@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Topbar from "./components/Topbar";
@@ -10,7 +10,8 @@ import Footer from "./components/Footer";
 import AboutPage from "./pages/AboutPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import LoginPage from "./pages/LoginPage";
-import AdminPage from "./pages/AdminPage";
+// the dashboard is only for the site owner: loaded on demand, not in every visitor's bundle
+const AdminPage = lazy(() => import("./pages/AdminPage"));
 import Cursor from "./components/motion/Cursor";
 import PixelSky from "./components/motion/PixelSky";
 import SkyBackdrop from "./components/motion/SkyBackdrop";
@@ -48,7 +49,7 @@ const PAGES: Record<Route, () => React.ReactNode> = {
   "/about": () => <AboutPage />,
   "/projects": () => <ProjectsPage />,
   [SECRET_PATH]: () => <LoginPage />,
-  [ADMIN_PATH]: () => <AdminPage />,
+  [ADMIN_PATH]: () => <Suspense fallback={<section className="sec sec--dark adm" data-tone="dark" />}><AdminPage /></Suspense>,
 };
 
 /** Static copy of the outgoing page (ids removed; 2D canvases copied over). */
@@ -79,7 +80,21 @@ export default function App() {
   const pathRef = useRef(path);
   const [moving, setMoving] = useState(false);
 
-  const { lang } = useLang();
+  const { lang, t } = useLang();
+
+  // Tab title per page; the sign-in and admin pages also ask search engines not to index them
+  useEffect(() => {
+    const titles: Partial<Record<Route, string>> = { "/about": t.nav.about, "/projects": t.nav.work };
+    document.title = titles[path] ? `${titles[path]} — ${t.name}` : t.docTitle;
+    const hidden = path === SECRET_PATH || path === ADMIN_PATH;
+    let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    if (hidden && !robots) {
+      robots = document.createElement("meta");
+      robots.name = "robots";
+      robots.content = "noindex, nofollow";
+      document.head.append(robots);
+    } else if (!hidden) robots?.remove();
+  }, [path, t]);
   const { version } = useContent();
   // re-measure when the database content replaces the bundled copy
   const anim = useAnimations(root, lang, path, version);

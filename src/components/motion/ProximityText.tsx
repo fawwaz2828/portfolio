@@ -22,7 +22,7 @@ export function useProximityWeight(
     const chars = Array.from(root.querySelectorAll<HTMLElement>(".char"));
     const weights = chars.map(() => min);
     let centres: { x: number; y: number }[] = [];
-    let mx = -9999, my = -9999, raf = 0, inside = false;
+    let mx = -9999, my = -9999, raf = 0, inside = false, stale = true;
 
     const measure = () => {
       centres = chars.map((el) => {
@@ -31,7 +31,12 @@ export function useProximityWeight(
       });
     };
 
+    // Scroll / resize only mark the positions as stale; they are measured again
+    // when the pointer next moves, instead of on every scroll event
+    const invalidate = () => { stale = true; };
+
     const tick = () => {
+      if (stale) { measure(); stale = false; }
       let moving = false;
       chars.forEach((el, i) => {
         const c = centres[i];
@@ -48,10 +53,7 @@ export function useProximityWeight(
     const onMove = (e: PointerEvent) => {
       mx = e.clientX;
       my = e.clientY;
-      if (!raf) {
-        measure();
-        raf = requestAnimationFrame(tick);
-      }
+      if (!raf) raf = requestAnimationFrame(tick);
     };
     const onEnter = () => { inside = true; };
     const onLeave = () => { inside = false; mx = my = -9999; };
@@ -60,15 +62,15 @@ export function useProximityWeight(
     window.addEventListener("pointermove", onMove, { passive: true });
     zone.addEventListener("pointerenter", onEnter);
     zone.addEventListener("pointerleave", onLeave);
-    window.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", invalidate, { passive: true });
+    window.addEventListener("resize", invalidate);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       zone.removeEventListener("pointerenter", onEnter);
       zone.removeEventListener("pointerleave", onLeave);
-      window.removeEventListener("scroll", measure);
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", invalidate);
+      window.removeEventListener("resize", invalidate);
       chars.forEach((el) => el.style.removeProperty("font-variation-settings"));
     };
   }, [ref, min, max, radius, reduce]);
@@ -101,10 +103,12 @@ function useScrambleIn(ref: RefObject<HTMLElement | null>, on: boolean, play: bo
     const chars = Array.from(root.querySelectorAll<HTMLElement>(".char"));
     const real = chars.map((c) => c.textContent ?? "");
     const styles = chars.map((c) => c.getAttribute("style"));
-    // Freeze each letter's box so narrow glyphs ( . : ) don't shift the line
-    chars.forEach((c) => {
-      const w = c.getBoundingClientRect().width;
-      c.style.width = `${w}px`;
+    // Freeze each letter's box so narrow glyphs ( . : ) don't shift the line.
+    // All reads first, then all writes: interleaving them forced a fresh
+    // layout per letter (~0.8s of main-thread work on a mid-range phone)
+    const widths = chars.map((c) => c.getBoundingClientRect().width);
+    chars.forEach((c, i) => {
+      c.style.width = `${widths[i]}px`;
       c.style.textAlign = "center";
     });
     const settle = chars.map(() => 0.25 + 0.75 * Math.random());

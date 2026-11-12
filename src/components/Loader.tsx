@@ -31,7 +31,7 @@ const BANDS = [
 ];
 
 /** Assets worth having before the page shows */
-const PRELOAD = ["/images/background1.jpg", "/images/background2.jpg", "/images/me.png", "/images/fw-nav.png"];
+const PRELOAD = ["/images/background1.jpg", "/images/background2.jpg", "/images/me.jpg", "/images/fw-nav.png"];
 
 type Line = {
   t: string; lead: string; end: string;
