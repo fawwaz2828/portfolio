@@ -18,7 +18,7 @@ function seo(siteUrl: string): Plugin {
       if (!base) return html;
       return html
         .replace(/(property="og:url" content=")\//, `$1${base}/`)
-        .replace(/(content=")\/og\.png"/g, `$1${base}/og.png"`)
+        .replace(/(content=")\/og\.jpg"/g, `$1${base}/og.jpg"`)
         .replace("</title>", `</title>\n    <link rel="canonical" href="${base}/" />`);
     },
     generateBundle() {
