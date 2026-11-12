@@ -30,6 +30,9 @@ type Tab = {
   meta: (r: Row) => string;
 };
 
+const ZH_HINT = "Filled in automatically on save, and again whenever the English text changes";
+const TIMELINE_ZH: [string, string][] = [["title", "title_zh"], ["date_label", "date_label_zh"], ["place", "place_zh"]];
+
 const TABS: Tab[] = [
   {
     id: "projects", label: "Projects", table: "projects",
@@ -58,9 +61,13 @@ const TABS: Tab[] = [
       { key: "title", label: "Role", type: "text", required: true },
       { key: "date_label", label: "Dates", type: "text", required: true, hint: "e.g. 2025 — 2026" },
       { key: "place", label: "Organisation / details", type: "text", wide: true },
+      { key: "title_zh", label: "Role (中文)", type: "text", hint: ZH_HINT },
+      { key: "date_label_zh", label: "Dates (中文)", type: "text", hint: ZH_HINT },
+      { key: "place_zh", label: "Organisation / details (中文)", type: "text", wide: true, hint: ZH_HINT },
       { key: "sort_order", label: "Order", type: "number", hint: "Lower shows first" },
     ],
-    defaults: { kind: "experience", title: "", date_label: "", place: "", sort_order: 0 },
+    translate: TIMELINE_ZH,
+    defaults: { kind: "experience", title: "", date_label: "", place: "", title_zh: "", date_label_zh: "", place_zh: "", sort_order: 0 },
     title: (r) => String(r.title),
     meta: (r) => `${r.date_label} · ${r.place}`,
   },
@@ -70,9 +77,13 @@ const TABS: Tab[] = [
       { key: "title", label: "School", type: "text", required: true },
       { key: "date_label", label: "Dates", type: "text", required: true, hint: "e.g. 2023 — 2025" },
       { key: "place", label: "Degree / details", type: "text", wide: true },
+      { key: "title_zh", label: "School (中文)", type: "text", hint: ZH_HINT },
+      { key: "date_label_zh", label: "Dates (中文)", type: "text", hint: ZH_HINT },
+      { key: "place_zh", label: "Degree / details (中文)", type: "text", wide: true, hint: ZH_HINT },
       { key: "sort_order", label: "Order", type: "number", hint: "Lower shows first" },
     ],
-    defaults: { kind: "education", title: "", date_label: "", place: "", sort_order: 0 },
+    translate: TIMELINE_ZH,
+    defaults: { kind: "education", title: "", date_label: "", place: "", title_zh: "", date_label_zh: "", place_zh: "", sort_order: 0 },
     title: (r) => String(r.title),
     meta: (r) => `${r.date_label} · ${r.place}`,
   },
@@ -81,9 +92,11 @@ const TABS: Tab[] = [
     fields: [
       { key: "group_name", label: "Group", type: "text", required: true, hint: "e.g. Frontend" },
       { key: "items", label: "Skills", type: "tags", wide: true, hint: "Comma separated: React, Next.js, TypeScript" },
+      { key: "group_name_zh", label: "Group (中文)", type: "text", hint: ZH_HINT },
       { key: "sort_order", label: "Order", type: "number", hint: "Lower shows first" },
     ],
-    defaults: { group_name: "", items: [], sort_order: 0 },
+    translate: [["group_name", "group_name_zh"]],
+    defaults: { group_name: "", items: [], group_name_zh: "", sort_order: 0 },
     title: (r) => String(r.group_name),
     meta: (r) => ((r.items as string[]) ?? []).join(", "),
   },
@@ -92,9 +105,12 @@ const TABS: Tab[] = [
     fields: [
       { key: "question", label: "Question", type: "text", required: true, wide: true },
       { key: "answer", label: "Answer", type: "textarea", required: true, wide: true },
+      { key: "question_zh", label: "Question (中文)", type: "text", wide: true, hint: ZH_HINT },
+      { key: "answer_zh", label: "Answer (中文)", type: "textarea", wide: true, hint: ZH_HINT },
       { key: "sort_order", label: "Order", type: "number", hint: "Lower shows first" },
     ],
-    defaults: { question: "", answer: "", sort_order: 0 },
+    translate: [["question", "question_zh"], ["answer", "answer_zh"]],
+    defaults: { question: "", answer: "", question_zh: "", answer_zh: "", sort_order: 0 },
     title: (r) => String(r.question),
     meta: (r) => String(r.answer),
   },

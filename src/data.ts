@@ -106,7 +106,7 @@ export const moreProjects: { name: string; desc: string; scope: Scope }[] = [
   { name: "DPM UII Website", desc: "Developed & managed the official site (dpm.uii.ac.id) — WordPress", scope: "outside" },
 ];
 
-export type Entry = { date: string; title: string; place: string };
+export type Entry = { date: string; title: string; place: string; dateZh?: string; titleZh?: string; placeZh?: string };
 
 export const education: Entry[] = [
   { date: "Sep 2025 — Now", title: "Nanjing Xiaozhuang University", place: "B.Eng Software Engineering (2+2 Double Degree) · Nanjing, China" },

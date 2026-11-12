@@ -30,8 +30,40 @@ async function one(text: string) {
   return String(json.responseData.translatedText);
 }
 
+const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+/**
+ * Date labels ("2025 — Now", "Sep 2025 — Present", "Mar — May 2022") are
+ * translated here: machine translation tends to mangle them. Returns null
+ * for anything that is not a date label.
+ */
+export function dateToChinese(text: string): string | null {
+  // "now" is tried before the month names, which would otherwise swallow it
+  const token = /^(?:(\d{4})|(?=now$|present$|today$)(now|present|today)|([A-Za-z]{3})[a-z]*\.?(?:\s+(\d{4}))?)$/i;
+  const parts = text.split(/\s*[—–-]\s*/);
+  if (!parts.length || parts.length > 2) return null;
+  const out: string[] = [];
+  for (const raw of parts) {
+    const m = raw.trim().match(token);
+    if (!m) return null;
+    if (m[1]) out.push(m[1]);
+    else if (m[2]) out.push("至今");
+    else {
+      const mi = MONTHS.indexOf(m[3].toLowerCase());
+      if (mi < 0) return null;
+      out.push(m[4] ? `${m[4]}年${mi + 1}月` : `${mi + 1}月`);
+    }
+  }
+  // "3月 — 2022年5月" reads better with the year up front: "2022年3月 — 5月"
+  const year = out[1]?.match(/^(\d{4})年/);
+  if (year && /^\d+月$/.test(out[0])) { out[0] = year[1] + "年" + out[0]; out[1] = out[1].slice(5); }
+  return out.join(" — ");
+}
+
 /** Parts around " · " are translated on their own so "Role · 2026" keeps its shape. */
 export async function toChinese(text: string): Promise<string> {
+  const asDate = dateToChinese(text.trim());
+  if (asDate !== null) return asDate;
   const parts = await Promise.all(
     text.split(" · ").map(async (part) => {
       if (!/[A-Za-z]/.test(part)) return part; // a year, an emoji: nothing to translate
