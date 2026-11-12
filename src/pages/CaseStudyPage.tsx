@@ -167,7 +167,6 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
             <p className="cs__lead">{lead}</p>
             {more.map((m, i) => <p key={i} className="cs__lead-more">{linkify(m)}</p>)}
           </div>
-          {open && <div className="cs__cta">{open}</div>}
         </motion.div>
       </header>
 
