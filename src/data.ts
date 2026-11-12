@@ -32,7 +32,6 @@ export type Project = {
 
 export type Scope = "campus" | "outside";
 
-const GITHUB = "https://github.com/fawwaz2828";
 
 export const projects: Project[] = [
   {
@@ -42,7 +41,7 @@ export const projects: Project[] = [
     desc: "Civic-tech platform making Indonesian fiscal & monetary policy accessible. Led the frontend — Next.js 15, React 19, Supabase. 🥈 2nd Place, Codelab TechSprint 2026.",
     tag: "Frontend Lead · 2026",
     label: "Civic-tech",
-    href: GITHUB,
+    href: "https://github.com/RizMastah/kawalbijak",
   },
   {
     name: "Electrovice",
@@ -51,7 +50,7 @@ export const projects: Project[] = [
     desc: "Flutter mobile app built for INDES 2026 in Malaysia — GetX, Firebase & Mapbox. Development, UI/UX and QA. 🥇 1st Place.",
     tag: "Mobile Dev · 2026",
     label: "Mobile",
-    href: GITHUB,
+    href: "https://github.com/fawwaz2828/electrovice",
   },
   {
     name: "AI Fitness Coach",
@@ -60,7 +59,7 @@ export const projects: Project[] = [
     desc: "Native SwiftUI app analyzing posture & movement on-device with Apple Vision and Core ML, with AI coaching reports from a FastAPI multi-agent backend.",
     tag: "iOS App · 2026",
     label: "iOS + AI",
-    href: GITHUB,
+    href: "https://github.com/fawwaz2828/fawfitt",
   },
   {
     name: "SNE-SPIMS",
@@ -69,7 +68,7 @@ export const projects: Project[] = [
     desc: "Student progress & information system for special-needs schools — role-based access, IEPs, therapy scheduling, parent–teacher messaging. Spring Boot 3, MySQL 8.",
     tag: "Web App · 2026",
     label: "Enterprise web",
-    href: GITHUB,
+    href: "https://github.com/fawwaz2828/SNE-SPIMS",
   },
   {
     name: "FoodScan",
@@ -78,7 +77,7 @@ export const projects: Project[] = [
     desc: "SwiftUI calorie tracker with AI food analysis and personalized calorie goals.",
     tag: "iOS App · 2026",
     label: "iOS + AI",
-    href: GITHUB,
+    href: "https://github.com/fawwaz2828/foodScan",
   },
   {
     name: "CrimeWatch",
@@ -87,7 +86,7 @@ export const projects: Project[] = [
     desc: "Platform assessing crime-risk levels in tourist areas. Frontend in Next.js & TypeScript.",
     tag: "Frontend · 2025",
     label: "Web",
-    href: GITHUB,
+    href: "https://github.com/fawwaz2828/crimewatch",
   },
   {
     name: "larisinai.id",

@@ -7,6 +7,7 @@ import ProximityText from "./motion/ProximityText";
 import CrtBackground from "./motion/CrtBackground";
 import CrestShield from "./motion/CrestShield";
 import { useLang } from "../i18n";
+import { toHref } from "../lib/url";
 import { Link } from "../router";
 
 /**
@@ -71,7 +72,8 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
   const zh = lang === "zh";
   const [role, year] = ((zh && p.tagZh) || local?.tag || p.tag).split(" · ");
   const desc = (zh && p.descZh) || local?.desc || p.desc;
-  const external = p.href.startsWith("http");
+  const href = toHref(p.href);
+  const external = href.startsWith("http");
   // Wider than the frame so the sideways parallax never shows an edge
   const media = (
     <div className="pcard__parallax" data-parallax>
@@ -87,10 +89,10 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
       </div>
 
       {/* Projects without a link (e.g. ones turned into cards from the old "more" list) get a plain frame */}
-      {p.href ? (
+      {href ? (
         <a
           className="pcard__media"
-          href={p.href}
+          href={href}
           target={external ? "_blank" : undefined}
           rel={external ? "noopener noreferrer" : undefined}
           data-cursor-label={t.work.view}
@@ -109,9 +111,9 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
           <ul className="pcard__chips" aria-label={t.work.tech}>
             {p.stack.map((t) => <li key={t} className="chip">{t}</li>)}
           </ul>
-          {p.href && (
+          {href && (
             <div className="pcard__actions">
-              <a className="btn-solid" href={p.href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
+              <a className="btn-solid" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
                 {t.work.viewProject}
               </a>
             </div>

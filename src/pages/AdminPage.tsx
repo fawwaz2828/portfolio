@@ -4,6 +4,7 @@ import { useAuth } from "../lib/auth";
 import { useContent } from "../content";
 import { Link, useRouter } from "../router";
 import { toChinese } from "../lib/translate";
+import { toHref } from "../lib/url";
 
 /**
  * Content dashboard (Supabase CRUD) at ADMIN_PATH. Reached after signing in on
@@ -144,6 +145,7 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
     try { auto = await translate(); } catch { note = " (中文 not translated: service unavailable)"; }
     const payload: Record<string, unknown> = {};
     for (const f of tab.fields) payload[f.key] = auto[f.key] ?? form[f.key];
+    if (typeof payload.href === "string") payload.href = toHref(payload.href);
     if (tab.filter) payload[tab.filter[0]] = tab.filter[1];
     const q = row
       ? supabase!.from(tab.table).update(payload).eq("id", row.id)
