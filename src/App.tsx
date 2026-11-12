@@ -19,7 +19,8 @@ import GlitchGate, { type GateHandle } from "./components/motion/GlitchGate";
 import { useAnimations } from "./useAnimations";
 import { useLang } from "./i18n";
 import { useContent } from "./content";
-import { ADMIN_PATH, RouterContext, SECRET_PATH, normalize, type Route } from "./router";
+import { ADMIN_PATH, CASE_PREFIX, RouterContext, SECRET_PATH, normalize, slugOf, type Route, type StaticRoute } from "./router";
+import CaseStudyPage from "./pages/CaseStudyPage";
 
 /**
  * Page transition after andreas.vision (their numbers): the current page
@@ -36,7 +37,7 @@ const showTopbar = () => document.querySelector(".topbar")?.classList.remove("hi
 const IN_OUT = "cubic-bezier(0.65, 0, 0.35, 1)";
 const OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
 
-const PAGES: Record<Route, () => React.ReactNode> = {
+const PAGES: Record<StaticRoute, () => React.ReactNode> = {
   // Landing: a short version of everything; /about and /projects hold the full story
   "/": () => (
     <>
@@ -81,11 +82,14 @@ export default function App() {
   const [moving, setMoving] = useState(false);
 
   const { lang, t } = useLang();
+  const { version, projects } = useContent();
 
   // Tab title per page; the sign-in and admin pages also ask search engines not to index them
   useEffect(() => {
     const titles: Partial<Record<Route, string>> = { "/about": t.nav.about, "/projects": t.nav.work };
-    document.title = titles[path] ? `${titles[path]} — ${t.name}` : t.docTitle;
+    const caseName = path.startsWith(CASE_PREFIX) ? projects.find((x) => slugOf(x.name) === path.slice(CASE_PREFIX.length))?.name : undefined;
+    const label = caseName ?? titles[path];
+    document.title = label ? `${label} — ${t.name}` : t.docTitle;
     const hidden = path === SECRET_PATH || path === ADMIN_PATH;
     let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
     if (hidden && !robots) {
@@ -94,8 +98,7 @@ export default function App() {
       robots.content = "noindex, nofollow";
       document.head.append(robots);
     } else if (!hidden) robots?.remove();
-  }, [path, t]);
-  const { version } = useContent();
+  }, [path, t, projects]);
   // re-measure when the database content replaces the bundled copy
   const anim = useAnimations(root, lang, path, version);
   const animRef = useRef(anim);
@@ -194,7 +197,11 @@ export default function App() {
           <Topbar />
           <div id="smooth-wrapper">
             <div id="smooth-content">
-              <main id="top" data-page={path}>{PAGES[path]()}</main>
+              <main id="top" data-page={path}>
+                {path.startsWith(CASE_PREFIX)
+                  ? <CaseStudyPage key={path} slug={path.slice(CASE_PREFIX.length)} />
+                  : PAGES[path as StaticRoute]()}
+              </main>
               <Footer />
             </div>
           </div>

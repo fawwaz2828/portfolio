@@ -1,12 +1,16 @@
--- Chinese (中文) text for every content table. Run once in Supabase → SQL Editor → New query.
--- Safe to run again: columns are only added when missing, and the translations
--- below only fill fields that are still empty (your own edits are kept).
+-- Database upgrade for the portfolio. Run once in Supabase → SQL Editor → New query.
+-- Adds: Chinese (中文) text for every content table, and case studies for projects.
+-- Safe to run again: columns are only added when missing, and the text below
+-- only fills fields that are still empty (your own edits are kept).
 -- An empty 中文 field = the site shows the English text in 中文 mode.
+-- An empty case study = no case study page for that project.
 
 -- ── Columns ─────────────────────────────────────────────────────────────
 alter table public.projects
   add column if not exists description_zh text not null default '',
-  add column if not exists tag_zh         text not null default '';
+  add column if not exists tag_zh         text not null default '',
+  add column if not exists case_study     text not null default '',
+  add column if not exists case_study_zh  text not null default '';
 
 alter table public.timeline
   add column if not exists date_label_zh text not null default '',
@@ -76,6 +80,82 @@ from (values
   ('4784ac50-485b-4e78-a2e6-0de1753d6d4f'::uuid, '你会说哪些语言？', '印尼语（母语）、英语（流利）和中文（基础，在南京每天都在进步）。')
 ) as v(id, q, a)
 where f.id = v.id;
+
+-- ── Case studies (drafts from the project READMEs; edit them in /admin) ──
+update public.projects as p set
+  case_study    = case when p.case_study = '' then v.en else p.case_study end,
+  case_study_zh = case when p.case_study_zh = '' then v.zh else p.case_study_zh end
+from (values
+  ('5e9741e7-5e90-4753-ad31-b4e1e3d0c684'::uuid, '## The problem
+Indonesia''s fiscal and monetary policies are announced as budget figures and jargon. KawalBijak turns them into what they mean for one household: the change in rupiah per month, worked out from the user''s own profile, next to verified reports from citizens on the ground.
+
+## My role
+Frontend Lead in a team of three (LaBuLaDa, Universitas Islam Indonesia). I built the landing page, the policy feed, the policy detail pages, the dashboard and the sign-in flow.
+
+## How it works
+- A deterministic formula engine turns a policy and a household profile into a monthly rupiah impact.
+- A gap score compares official budget figures with citizen reports, weighted by each reporter''s credibility.
+- An AI advisor and a what-if simulator (Groq, Llama 3.3 70B) explain the numbers; every AI call is logged for public review.
+- Every report goes through an 8-step verification pipeline, and every table is protected by row-level security in Supabase.
+
+## Stack
+Next.js 15, React 19, TypeScript, Tailwind CSS v4, shadcn/ui, Zustand, TanStack Query, Zod, Recharts, GSAP, Supabase and Groq, deployed on Vercel.
+
+## Result
+2nd place at Codelab TechSprint 2026. Live demo: https://kawalbijak.vercel.app', '## 要解决的问题
+印尼的财政与货币政策通常以预算数字和专业术语发布。KawalBijak 把它们换算成对一个家庭的实际影响：根据用户自己的情况，算出每月多花或少花多少印尼盾，并附上来自各地民众、经过核实的反馈。
+
+## 我的角色
+三人团队（LaBuLaDa，印度尼西亚伊斯兰大学）中的前端负责人。我负责落地页、政策信息流、政策详情页、仪表盘和登录流程。
+
+## 工作原理
+- 确定性的公式引擎根据政策和家庭情况，计算每月的印尼盾影响。
+- 差距评分（Gap Score）把官方预算数字与民众反馈进行对比，并按反馈者的可信度加权。
+- AI 顾问和假设模拟器（Groq，Llama 3.3 70B）负责解释这些数字；每一次 AI 调用都会记录下来，供公众审查。
+- 每条反馈都要经过 8 步核验流程，Supabase 中的每张表都启用了行级安全（RLS）。
+
+## 技术栈
+Next.js 15、React 19、TypeScript、Tailwind CSS v4、shadcn/ui、Zustand、TanStack Query、Zod、Recharts、GSAP、Supabase 和 Groq，部署在 Vercel 上。
+
+## 成果
+Codelab TechSprint 2026 第二名。在线演示：https://kawalbijak.vercel.app'),
+  ('66341359-d7c0-49f5-a53d-efcd4fb65da4'::uuid, '## The problem
+Getting a phone, laptop, AC or TV repaired usually means calling around and guessing what it will cost. ElectroVice connects customers with verified repair technicians nearby and keeps the whole job, from booking to payment, in one app.
+
+## My role
+Frontend developer, UI/UX designer and QA tester in a team of three (LaBuLaDa).
+
+## What it does
+- Browse verified technicians near you across six repair categories: smartphone, laptop, appliance, AC and cooling, TV and display, vehicle.
+- Book a session and follow the technician live on a map.
+- A 6-digit code confirms the start of the service between customer and technician.
+- In-app chat, itemised repair cost estimates, push notifications, ratings and reviews.
+- Separate flows for customers, technicians and admins, with a forced-update check on launch.
+
+## Stack
+Flutter and Dart with GetX, Mapbox for live tracking, and Firebase: Firestore, Auth, Cloud Messaging and Storage.
+
+## Result
+1st place at INDES 2026 in Malaysia. Released as an Android beta (v3.0.0).', '## 要解决的问题
+手机、电脑、空调或电视坏了，通常只能到处打电话，也很难事先知道要花多少钱。ElectroVice 把顾客和附近经过认证的维修师傅连接起来，从预约到付款，整个流程都在一个应用里完成。
+
+## 我的角色
+三人团队（LaBuLaDa）中的前端开发、UI/UX 设计与测试。
+
+## 主要功能
+- 按位置浏览附近经过认证的师傅，覆盖六类维修：手机、电脑、家电、空调与制冷、电视与显示屏、车辆。
+- 预约服务，并在地图上实时查看师傅的位置。
+- 顾客与师傅通过 6 位验证码确认服务开始。
+- 应用内聊天、逐项列出的维修费用估算、推送通知、评分与评价。
+- 顾客、师傅和管理员各有独立的流程，启动时会检查并强制更新版本。
+
+## 技术栈
+Flutter 与 Dart（GetX），Mapbox 实时追踪，以及 Firebase：Firestore、Auth、Cloud Messaging 和 Storage。
+
+## 成果
+马来西亚 INDES 2026 第一名。已发布 Android 测试版（v3.0.0）。')
+) as v(id, en, zh)
+where p.id = v.id;
 
 -- make the API see the new columns right away
 notify pgrst, 'reload schema';

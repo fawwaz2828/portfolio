@@ -17,7 +17,7 @@ import { toHref } from "../lib/url";
  * live site content.
  */
 type FieldType = "text" | "textarea" | "number" | "tags" | "select" | "checkbox" | "image";
-type Field = { key: string; label: string; type: FieldType; options?: [string, string][]; hint?: string; required?: boolean; wide?: boolean };
+type Field = { key: string; label: string; type: FieldType; options?: [string, string][]; hint?: string; required?: boolean; wide?: boolean; rows?: number };
 type Row = Record<string, unknown> & { id: string };
 type Tab = {
   id: string; label: string; table: string;
@@ -31,6 +31,8 @@ type Tab = {
 };
 
 const ZH_HINT = "Filled in automatically on save, and again whenever the English text changes";
+const CASE_HINT = "Optional. Fills a page at /projects/<name> and adds a \"Case study\" button to the card. "
+  + "\"## Heading\" starts a section, \"- item\" makes a bullet, a blank line starts a new paragraph, https:// links become clickable.";
 const TIMELINE_ZH: [string, string][] = [["title", "title_zh"], ["date_label", "date_label_zh"], ["place", "place_zh"]];
 
 const TABS: Tab[] = [
@@ -47,11 +49,13 @@ const TABS: Tab[] = [
       { key: "stack", label: "Tech stack", type: "tags", hint: "Comma separated: React, Supabase" },
       { key: "scope", label: "Made for", type: "select", options: [["campus", "Campus"], ["outside", "Outside campus"]] },
       { key: "featured", label: "Show as a big card (off = small \"Also built\" list)", type: "checkbox", wide: true },
+      { key: "case_study", label: "Case study", type: "textarea", wide: true, rows: 14, hint: CASE_HINT },
+      { key: "case_study_zh", label: "Case study (中文)", type: "textarea", wide: true, rows: 10, hint: ZH_HINT },
       { key: "image", label: "Screenshot", type: "image", wide: true },
       { key: "sort_order", label: "Order", type: "number", hint: "Lower shows first" },
     ],
-    translate: [["tag", "tag_zh"], ["description", "description_zh"]],
-    defaults: { name: "", description: "", description_zh: "", tag: "", tag_zh: "", label: "", href: "", stack: [], image: null, scope: "outside", featured: true, sort_order: 0 },
+    translate: [["tag", "tag_zh"], ["description", "description_zh"], ["case_study", "case_study_zh"]],
+    defaults: { name: "", description: "", description_zh: "", tag: "", tag_zh: "", case_study: "", case_study_zh: "", label: "", href: "", stack: [], image: null, scope: "outside", featured: true, sort_order: 0 },
     title: (r) => String(r.name),
     meta: (r) => [r.featured ? "Card" : "Also built", r.scope === "campus" ? "Campus" : "Outside", r.tag].filter(Boolean).join(" · "),
   },
@@ -169,7 +173,7 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
     const { error } = await q;
     setBusy(false);
     if (error) {
-      setErr(/_zh\b/.test(error.message) ? `${error.message} — run supabase/add-zh.sql in the Supabase SQL Editor first.` : error.message);
+      setErr(/_zh\b|case_study/.test(error.message) ? `${error.message} — run supabase/upgrade.sql in the Supabase SQL Editor first.` : error.message);
       return;
     }
     onSaved((row ? "Saved" : "Added") + note);
@@ -196,7 +200,7 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
               {f.type !== "checkbox" && <span className="adm-field__label">{f.label}{f.required && " *"}</span>}
               {f.type === "text" && <input value={String(v ?? "")} required={f.required} onChange={(e) => set(f.key, e.target.value)} />}
               {f.type === "number" && <input type="number" value={Number(v ?? 0)} onChange={(e) => set(f.key, Number(e.target.value))} />}
-              {f.type === "textarea" && <textarea rows={4} value={String(v ?? "")} required={f.required} onChange={(e) => set(f.key, e.target.value)} />}
+              {f.type === "textarea" && <textarea rows={f.rows ?? 4} value={String(v ?? "")} required={f.required} onChange={(e) => set(f.key, e.target.value)} />}
               {f.type === "tags" && (
                 <input
                   value={((v as string[]) ?? []).join(", ")}

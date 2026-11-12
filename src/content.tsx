@@ -12,7 +12,7 @@ import type { Entry, Project, Scope } from "./data";
  * swap so animations can re-measure.
  *
  * 中文: rows carry Chinese copies of their text (the *_zh columns from
- * supabase/add-zh.sql). The provider hands out the Chinese text in 中文 mode,
+ * supabase/upgrade.sql). The provider hands out the Chinese text in 中文 mode,
  * falling back to English for any field that has none, so pages just read
  * `title`, `group`, `q`… whatever the language.
  */
@@ -32,7 +32,7 @@ export type Content = {
 // Row shapes in the database (supabase/schema.sql)
 export type ProjectRow = {
   id: string; name: string; description: string; tag: string; label: string; href: string;
-  description_zh?: string; tag_zh?: string; // added by supabase/add-zh.sql
+  description_zh?: string; tag_zh?: string; case_study?: string; case_study_zh?: string; // added by supabase/upgrade.sql
   stack: string[]; image: string | null; scope: Scope; featured: boolean; sort_order: number;
 };
 export type TimelineRow = {
@@ -74,6 +74,7 @@ async function fetchContent(): Promise<Content | null> {
     projects: projects.filter((r) => r.featured).map((r) => ({
       name: r.name, desc: r.description, tag: r.tag, label: r.label, href: r.href,
       descZh: r.description_zh || undefined, tagZh: r.tag_zh || undefined,
+      caseStudy: r.case_study || undefined, caseStudyZh: r.case_study_zh || undefined,
       stack: r.stack ?? [], image: r.image ?? undefined, scope: r.scope,
     })),
     moreProjects: projects.filter((r) => !r.featured).map((r) => ({ name: r.name, desc: r.description, descZh: r.description_zh || undefined, scope: r.scope })),

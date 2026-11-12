@@ -62,6 +62,15 @@ export function dateToChinese(text: string): string | null {
 
 /** Parts around " · " are translated on their own so "Role · 2026" keeps its shape. */
 export async function toChinese(text: string): Promise<string> {
+  // Multi-line text (case studies): one line at a time, keeping "## " and "- " markers
+  if (text.includes("\n")) {
+    const out: string[] = [];
+    for (const line of text.split(/\r?\n/)) {
+      const m = line.match(/^(\s*(?:#{1,3}|[-*•])\s+)?(.*)$/)!;
+      out.push(m[2].trim() ? (m[1] ?? "") + (await toChinese(m[2])) : line);
+    }
+    return out.join("\n");
+  }
   const asDate = dateToChinese(text.trim());
   if (asDate !== null) return asDate;
   const parts = await Promise.all(

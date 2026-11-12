@@ -20,6 +20,9 @@ export type Project = {
   /** Chinese versions from the database; empty falls back to i18n.tsx, then English */
   descZh?: string;
   tagZh?: string;
+  /** Long write-up shown on /projects/<slug> (see CaseStudyPage); no page without one */
+  caseStudy?: string;
+  caseStudyZh?: string;
   label: string;
   href: string;
   /** Tech chips shown on the card */

@@ -14,10 +14,18 @@ export const SECRET_PATH = "/4zattj3jwf";
 // straight back to the home page.
 export const ADMIN_PATH = "/gswvrqc5ykyc";
 export const ROUTES = ["/", "/about", "/projects", SECRET_PATH, ADMIN_PATH] as const;
-export type Route = (typeof ROUTES)[number];
+export type StaticRoute = (typeof ROUTES)[number];
+/** Case study pages: /projects/<slug of the project name> */
+export const CASE_PREFIX = "/projects/";
+export type Route = StaticRoute | `/projects/${string}`;
+
+/** "DPM UII Website 2025/2026" → "dpm-uii-website-2025-2026" */
+export const slugOf = (name: string) =>
+  name.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 export const normalize = (p: string): Route => {
   const clean = p.replace(/\/+$/, "") || "/";
+  if (/^\/projects\/[a-z0-9-]+$/.test(clean)) return clean as Route;
   return (ROUTES as readonly string[]).includes(clean) ? (clean as Route) : "/";
 };
 
