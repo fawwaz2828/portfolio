@@ -5,17 +5,20 @@ import { useLang } from "../i18n";
 import { toHref } from "../lib/url";
 import { Link, slugOf, useRouter } from "../router";
 import { useCover } from "../components/Work";
+import type { Project } from "../data";
 import PixelImage from "../components/motion/PixelImage";
 import CrtBackground from "../components/motion/CrtBackground";
 
 /**
- * /projects/<slug>: the long version of a project, written in /admin
- * ("Case study" field). Plain text with a tiny bit of structure:
+ * /projects/<slug>: a project's own page, opened by its card ("View project").
+ * Every project has one: title, role, description, stack, cover and a button
+ * to the repo / live site. The optional case study written in /admin
+ * ("Case study" field) adds sections below. Plain text with a bit of structure:
  *   ## Heading      a section title
  *   - item          a bullet (consecutive ones form a list)
  *   blank line      a new paragraph
- * Links written as https://… become clickable. Projects without a case study
- * (or an unknown slug) send the visitor back to /projects.
+ * Links written as https://… become clickable. An unknown slug sends the
+ * visitor back to /projects.
  */
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -52,21 +55,26 @@ function linkify(text: string): ReactNode {
 }
 
 export default function CaseStudyPage({ slug }: { slug: string }) {
-  const { projects, version } = useContent();
+  const { projects, moreProjects, version } = useContent();
   const { t, lang } = useLang();
   const { navigate } = useRouter();
-  const index = projects.findIndex((x) => slugOf(x.name) === slug);
-  const p = projects[index];
+  // the bundled fallback still keeps a short "more" list; those get a page too
+  const all: Project[] = [
+    ...projects,
+    ...moreProjects.map((m) => ({ name: m.name, desc: m.desc, descZh: m.descZh, tag: "", label: "", href: "", stack: [], scope: m.scope })),
+  ];
+  const index = all.findIndex((x) => slugOf(x.name) === slug);
+  const p = all[index];
   const no = String(index + 1).padStart(2, "0");
   const cover = useCover(p ?? { name: "", desc: "", tag: "", label: "", href: "", stack: [], scope: "outside" }, no);
   const body = p ? ((lang === "zh" && p.caseStudyZh) || p.caseStudy || "") : "";
 
-  // Unknown project, or no case study written yet. Wait for the database
-  // content first (version > 0): the bundled copy has no case studies.
+  // Unknown project: wait for the database content first (version > 0), since
+  // a project added in /admin is not in the bundled copy
   useEffect(() => {
-    if (version > 0 && !body) navigate("/projects", { replace: true });
-  }, [version, body, navigate]);
-  if (!p || !body) return <section className="sec sec--dark cs" data-tone="dark" />;
+    if (version > 0 && !p) navigate("/projects", { replace: true });
+  }, [version, p, navigate]);
+  if (!p) return <section className="sec sec--dark cs" data-tone="dark" />;
 
   const zh = lang === "zh";
   const local = t.work.projects[p.name];
@@ -98,7 +106,7 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
           {href && (
             <div className="pcard__actions">
               <a className="btn-solid" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
-                {t.work.viewProject} {external && "↗"}
+                {t.work.openProject} {external && "↗"}
               </a>
             </div>
           )}
@@ -111,13 +119,15 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
         </motion.div>
       )}
 
-      <div className="cs__body">
-        {blocks.map((b, i) =>
-          b.kind === "h" ? <h2 key={i} className="cs__h">{b.text}</h2>
-          : b.kind === "ul" ? <ul key={i} className="cs__list">{b.items.map((it, j) => <li key={j}>{linkify(it)}</li>)}</ul>
-          : <p key={i} className="cs__p">{linkify(b.text)}</p>,
-        )}
-      </div>
+      {blocks.length > 0 && (
+        <div className="cs__body">
+          {blocks.map((b, i) =>
+            b.kind === "h" ? <h2 key={i} className="cs__h">{b.text}</h2>
+            : b.kind === "ul" ? <ul key={i} className="cs__list">{b.items.map((it, j) => <li key={j}>{linkify(it)}</li>)}</ul>
+            : <p key={i} className="cs__p">{linkify(b.text)}</p>,
+          )}
+        </div>
+      )}
 
       <footer className="cs__foot">
         <Link to="/projects" className="btn-solid">← {t.work.all}</Link>

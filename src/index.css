@@ -1181,15 +1181,6 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .stack-table__cell:hover .stack-table__logo { fill: var(--accent); opacity: 1; }
 .stack-table__cell:hover .stack-table__name { color: var(--fg); }
 
-/* Ghost button next to .btn-solid (e.g. "View project" beside "Case study") */
-.btn-ghost {
-  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-  padding: .75rem 1.25rem; font-family: var(--mono); font-size: 12px;
-  text-transform: uppercase; letter-spacing: .08em;
-  color: var(--fg); border: 1px solid var(--line); transition: border-color .2s, color .2s;
-}
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-
 /* ───────────── Case study page (CaseStudyPage.tsx) ───────────── */
 .cs { position: relative; isolation: isolate; padding-top: calc(var(--topbar-h, 64px) + clamp(32px, 6vh, 72px)); padding-bottom: clamp(56px, 9vh, 112px); }
 .cs__bg {

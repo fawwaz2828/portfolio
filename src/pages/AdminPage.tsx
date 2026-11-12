@@ -31,7 +31,7 @@ type Tab = {
 };
 
 const ZH_HINT = "Filled in automatically on save, and again whenever the English text changes";
-const CASE_HINT = "Optional. Fills a page at /projects/<name> and adds a \"Case study\" button to the card. "
+const CASE_HINT = "Optional. Adds sections to the project's page (/projects/<name>), below the description. "
   + "\"## Heading\" starts a section, \"- item\" makes a bullet, a blank line starts a new paragraph, https:// links become clickable.";
 const TIMELINE_ZH: [string, string][] = [["title", "title_zh"], ["date_label", "date_label_zh"], ["place", "place_zh"]];
 

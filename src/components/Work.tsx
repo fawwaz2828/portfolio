@@ -7,7 +7,6 @@ import ProximityText from "./motion/ProximityText";
 import CrtBackground from "./motion/CrtBackground";
 import CrestShield from "./motion/CrestShield";
 import { useLang } from "../i18n";
-import { toHref } from "../lib/url";
 import { Link, slugOf, type Route } from "../router";
 
 /**
@@ -74,10 +73,9 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
   const zh = lang === "zh";
   const [role, year] = ((zh && p.tagZh) || local?.tag || p.tag).split(" · ");
   const desc = (zh && p.descZh) || local?.desc || p.desc;
-  const href = toHref(p.href);
-  const external = href.startsWith("http");
-  // With a case study the card opens it; the live project stays one click away on that page
-  const caseTo = p.caseStudy ? (`/projects/${slugOf(p.name)}` as Route) : null;
+  // Every project has its own page on this site (CaseStudyPage); the repo or
+  // live site is linked from there
+  const pageTo = `/projects/${slugOf(p.name)}` as Route;
   // Wider than the frame so the sideways parallax never shows an edge
   const media = (
     <div className="pcard__parallax" data-parallax>
@@ -92,25 +90,9 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
         <span>{role}{year ? ` · ${year}` : ""}</span>
       </div>
 
-      {/* Projects without a link (e.g. ones turned into cards from the old "more" list) get a plain frame */}
-      {caseTo ? (
-        <Link to={caseTo} className="pcard__media" data-cursor-label={t.work.read} aria-label={`${t.work.caseStudy}: ${p.name}`}>
-          {media}
-        </Link>
-      ) : href ? (
-        <a
-          className="pcard__media"
-          href={href}
-          target={external ? "_blank" : undefined}
-          rel={external ? "noopener noreferrer" : undefined}
-          data-cursor-label={t.work.view}
-          aria-label={`${t.work.view} ${p.name}`}
-        >
-          {media}
-        </a>
-      ) : (
-        <div className="pcard__media">{media}</div>
-      )}
+      <Link to={pageTo} className="pcard__media" data-cursor-label={t.work.view} aria-label={`${t.work.view} ${p.name}`}>
+        {media}
+      </Link>
 
       <div className="pcard__body">
         <h3 className="pcard__title">{p.name}</h3>
@@ -119,14 +101,9 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
           <ul className="pcard__chips" aria-label={t.work.tech}>
             {p.stack.map((t) => <li key={t} className="chip">{t}</li>)}
           </ul>
-          {(href || caseTo) && (
-            <div className="pcard__actions">
-              {caseTo && <Link to={caseTo} className="btn-solid">{t.work.caseStudy}</Link>}
-              {href && <a className={caseTo ? "btn-ghost" : "btn-solid"} href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
-                {t.work.viewProject}
-              </a>}
-            </div>
-          )}
+          <div className="pcard__actions">
+            <Link to={pageTo} className="btn-solid">{t.work.viewProject}</Link>
+          </div>
         </div>
       </div>
     </article>
