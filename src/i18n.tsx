@@ -91,6 +91,17 @@ const en = {
     more: "Also built",
     count: "projects",
   },
+  /** Project page (CaseStudyPage.tsx) */
+  caseStudy: {
+    role: "Focus",
+    year: "Year",
+    type: "Type",
+    madeFor: "Made for",
+    stack: "Built with",
+    contents: "On this page",
+    next: "Next project",
+    empty: "A full write-up for this project is coming soon.",
+  },
   login: {
     kicker: "Restricted",
     title: "Access",
@@ -219,6 +230,16 @@ const zh: Dict = {
     outsideDesc: "竞赛、自由职业客户与学生组织。",
     more: "其他作品",
     count: "个项目",
+  },
+  caseStudy: {
+    role: "方向",
+    year: "年份",
+    type: "类型",
+    madeFor: "项目来源",
+    stack: "技术栈",
+    contents: "本页内容",
+    next: "下一个项目",
+    empty: "该项目的详细介绍即将上线。",
   },
   login: {
     kicker: "限制区域",
