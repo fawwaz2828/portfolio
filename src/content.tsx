@@ -32,7 +32,7 @@ export type Content = {
 // Row shapes in the database (supabase/schema.sql)
 export type ProjectRow = {
   id: string; name: string; description: string; tag: string; label: string; href: string;
-  description_zh?: string; tag_zh?: string; case_study?: string; case_study_zh?: string; // added by supabase/upgrade.sql
+  description_zh?: string; tag_zh?: string; case_study?: string; case_study_zh?: string; images?: string[]; // added by supabase/upgrade.sql
   stack: string[]; image: string | null; scope: Scope; featured: boolean; sort_order: number;
 };
 export type TimelineRow = {
@@ -75,7 +75,7 @@ async function fetchContent(): Promise<Content | null> {
       name: r.name, desc: r.description, tag: r.tag, label: r.label, href: r.href,
       descZh: r.description_zh || undefined, tagZh: r.tag_zh || undefined,
       caseStudy: r.case_study || undefined, caseStudyZh: r.case_study_zh || undefined,
-      stack: r.stack ?? [], image: r.image ?? undefined, scope: r.scope,
+      stack: r.stack ?? [], image: r.image ?? undefined, images: r.images ?? [], scope: r.scope,
     })),
     moreProjects: projects.filter((r) => !r.featured).map((r) => ({ name: r.name, desc: r.description, descZh: r.description_zh || undefined, scope: r.scope })),
     experience: timeline.filter((r) => r.kind === "experience").map(toEntry),

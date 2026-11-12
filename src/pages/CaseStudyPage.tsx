@@ -1,4 +1,4 @@
-import { Fragment, useEffect, type MouseEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, type MouseEvent, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useContent } from "../content";
@@ -8,6 +8,7 @@ import { Link, slugOf, useRouter, type Route } from "../router";
 import { useCover } from "../components/Work";
 import type { Project } from "../data";
 import CrtBackground from "../components/motion/CrtBackground";
+import ProjectGallery from "../components/ProjectGallery";
 
 /**
  * /projects/<slug>: a project's own page, opened by its card ("View project").
@@ -15,7 +16,7 @@ import CrtBackground from "../components/motion/CrtBackground";
  *   breadcrumb · big title
  *   fact row: role · year · type · made for
  *   lead + "Open project ↗"
- *   cover
+ *   gallery: cover + the project's other images
  *   [aside: stack, contents]   [numbered sections from the write-up]
  *   next project
  *
@@ -85,10 +86,11 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
   const { t, lang } = useLang();
   const { navigate } = useRouter();
   // the bundled fallback still keeps a short "more" list; those get a page too
-  const all: Project[] = [
+  // memoised: useCover re-runs whenever the project object changes identity
+  const all: Project[] = useMemo(() => [
     ...projects,
     ...moreProjects.map((m) => ({ name: m.name, desc: m.desc, descZh: m.descZh, tag: "", label: "", href: "", stack: [], scope: m.scope })),
-  ];
+  ], [projects, moreProjects]);
   const index = all.findIndex((x) => slugOf(x.name) === slug);
   const p = all[index];
   const no = String(index + 1).padStart(2, "0");
@@ -107,6 +109,10 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
   const tag = (zh && p.tagZh) || local?.tag || p.tag;
   const [role, year] = tag ? tag.split(" · ") : ["", ""];
   const desc = (zh && p.descZh) || local?.desc || p.desc;
+  const [lead, ...more] = desc.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
+  // the cover first, then the extra images; a generated cover only when there are none
+  const shots = [...new Set([p.image, ...(p.images ?? [])].filter((x): x is string => !!x))];
+  if (!shots.length && cover) shots.push(cover);
   const body = (zh && p.caseStudyZh) || p.caseStudy || "";
   const sections = parse(body);
   const titled = sections.filter((s) => s.title);
@@ -157,14 +163,17 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
           </motion.dl>
         )}
         <motion.div className="cs__intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE, delay: 0.55 }}>
-          <p className="cs__lead">{desc}</p>
+          <div className="cs__desc">
+            <p className="cs__lead">{lead}</p>
+            {more.map((m, i) => <p key={i} className="cs__lead-more">{linkify(m)}</p>)}
+          </div>
           {open && <div className="cs__cta">{open}</div>}
         </motion.div>
       </header>
 
-      {cover && (
-        <motion.div className="cs__cover" initial={{ clipPath: "inset(100% 0 0 0)" }} animate={{ clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.2, ease: EASE, delay: 0.4 }}>
-          <img src={cover} alt={`${t.work.preview} ${p.name}`} className="cs__img" decoding="async" />
+      {shots.length > 0 && (
+        <motion.div className="cs__cover" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, ease: EASE, delay: 0.4 }}>
+          <ProjectGallery images={shots} alt={`${t.work.preview} ${p.name}`} labels={c.gallery} />
         </motion.div>
       )}
 

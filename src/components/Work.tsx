@@ -72,7 +72,8 @@ export function ProjectCard({ p, index, total }: { p: Project; index: number; to
   const local = t.work.projects[p.name];
   const zh = lang === "zh";
   const [role, year] = ((zh && p.tagZh) || local?.tag || p.tag).split(" · ");
-  const desc = (zh && p.descZh) || local?.desc || p.desc;
+  // the card shows the first paragraph; the project page shows all of it
+  const desc = ((zh && p.descZh) || local?.desc || p.desc).split(/\n\s*\n/)[0];
   // Every project has its own page on this site (CaseStudyPage); the repo or
   // live site is linked from there
   const pageTo = `/projects/${slugOf(p.name)}` as Route;

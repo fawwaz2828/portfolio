@@ -16,7 +16,7 @@ import { toHref } from "../lib/url";
  * and which fields the editor has. Saving or deleting reloads the list and the
  * live site content.
  */
-type FieldType = "text" | "textarea" | "number" | "tags" | "select" | "checkbox" | "image";
+type FieldType = "text" | "textarea" | "number" | "tags" | "select" | "checkbox" | "image" | "gallery";
 type Field = { key: string; label: string; type: FieldType; options?: [string, string][]; hint?: string; required?: boolean; wide?: boolean; rows?: number };
 type Row = Record<string, unknown> & { id: string };
 type Tab = {
@@ -43,19 +43,20 @@ const TABS: Tab[] = [
       { key: "tag", label: "Tag", type: "text", hint: "e.g. Frontend Lead · 2026" },
       { key: "label", label: "Label", type: "text", hint: "e.g. Civic-tech" },
       { key: "href", label: "Link", type: "text", hint: "https://…" },
-      { key: "description", label: "Description", type: "textarea", required: true, wide: true },
+      { key: "description", label: "Description", type: "textarea", required: true, wide: true, rows: 7, hint: "One or two paragraphs, separated by a blank line. Cards show the first paragraph; the project page shows both." },
       { key: "tag_zh", label: "Tag (中文)", type: "text", hint: "Filled in automatically on save" },
-      { key: "description_zh", label: "Description (中文)", type: "textarea", wide: true, hint: "Filled in automatically on save, and again whenever the English text changes. Edit it here to correct the machine translation." },
+      { key: "description_zh", label: "Description (中文)", type: "textarea", wide: true, rows: 6, hint: "Filled in automatically on save, and again whenever the English text changes. Edit it here to correct the machine translation." },
       { key: "stack", label: "Tech stack", type: "tags", hint: "Comma separated: React, Supabase" },
       { key: "scope", label: "Made for", type: "select", options: [["campus", "Campus"], ["outside", "Outside campus"]] },
       { key: "featured", label: "Show as a big card (off = small \"Also built\" list)", type: "checkbox", wide: true },
       { key: "case_study", label: "Case study", type: "textarea", wide: true, rows: 14, hint: CASE_HINT },
       { key: "case_study_zh", label: "Case study (中文)", type: "textarea", wide: true, rows: 10, hint: ZH_HINT },
-      { key: "image", label: "Screenshot", type: "image", wide: true },
+      { key: "image", label: "Cover image", type: "image", wide: true, hint: "Shown on the card and first on the project page." },
+      { key: "images", label: "More images", type: "gallery", wide: true, hint: "Shown after the cover in the project page gallery. Pick several files at once; use the arrows to reorder." },
       { key: "sort_order", label: "Order", type: "number", hint: "Lower shows first" },
     ],
     translate: [["tag", "tag_zh"], ["description", "description_zh"], ["case_study", "case_study_zh"]],
-    defaults: { name: "", description: "", description_zh: "", tag: "", tag_zh: "", case_study: "", case_study_zh: "", label: "", href: "", stack: [], image: null, scope: "outside", featured: true, sort_order: 0 },
+    defaults: { name: "", description: "", description_zh: "", tag: "", tag_zh: "", case_study: "", case_study_zh: "", label: "", href: "", stack: [], image: null, images: [], scope: "outside", featured: true, sort_order: 0 },
     title: (r) => String(r.name),
     meta: (r) => [r.featured ? "Card" : "Also built", r.scope === "campus" ? "Campus" : "Outside", r.tag].filter(Boolean).join(" · "),
   },
@@ -173,7 +174,7 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
     const { error } = await q;
     setBusy(false);
     if (error) {
-      setErr(/_zh\b|case_study/.test(error.message) ? `${error.message} — run supabase/upgrade.sql in the Supabase SQL Editor first.` : error.message);
+      setErr(/_zh\b|case_study|images/.test(error.message) ? `${error.message} — run supabase/upgrade.sql in the Supabase SQL Editor first.` : error.message);
       return;
     }
     onSaved((row ? "Saved" : "Added") + note);
@@ -186,6 +187,25 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
     setBusy(false);
   };
 
+  /** Several files at once, appended to the gallery in the order picked. */
+  const onFiles = async (key: string, list: FileList | null) => {
+    const files = Array.from(list ?? []);
+    if (!files.length) return;
+    setBusy(true); setErr("");
+    try {
+      for (const file of files) {
+        const url = await uploadImage(file);
+        setForm((f) => ({ ...f, [key]: [...((f[key] as string[] | undefined) ?? []), url] }));
+      }
+    } catch (e) { setErr(`Upload failed: ${(e as Error).message}`); }
+    setBusy(false);
+  };
+  const move = (arr: string[], i: number, d: number) => {
+    const out = [...arr];
+    [out[i], out[i + d]] = [out[i + d], out[i]];
+    return out;
+  };
+
   return (
     <form className="adm-editor" onSubmit={save}>
       <div className="adm-editor__head">
@@ -195,8 +215,9 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
       <div className="adm-fields">
         {tab.fields.map((f) => {
           const v = form[f.key];
+          const Wrap = f.type === "image" || f.type === "gallery" ? "div" : "label";
           return (
-            <label key={f.key} className={`adm-field${f.wide || f.type === "textarea" ? " adm-field--wide" : ""}${f.type === "checkbox" ? " adm-field--check" : ""}`}>
+            <Wrap key={f.key} className={`adm-field${f.wide || f.type === "textarea" ? " adm-field--wide" : ""}${f.type === "checkbox" ? " adm-field--check" : ""}`}>
               {f.type !== "checkbox" && <span className="adm-field__label">{f.label}{f.required && " *"}</span>}
               {f.type === "text" && <input value={String(v ?? "")} required={f.required} onChange={(e) => set(f.key, e.target.value)} />}
               {f.type === "number" && <input type="number" value={Number(v ?? 0)} onChange={(e) => set(f.key, Number(e.target.value))} />}
@@ -228,8 +249,32 @@ function Editor({ tab, row, onClose, onSaved }: { tab: Tab; row: Row | null; onC
                   <input placeholder="…or paste an image URL" value={String(v ?? "")} onChange={(e) => set(f.key, e.target.value || null)} />
                 </div>
               )}
+              {f.type === "gallery" && (() => {
+                const list = (v as string[] | undefined) ?? [];
+                return (
+                  <div className="adm-gallery">
+                    {list.length === 0
+                      ? <span className="adm-image__empty">No extra images yet</span>
+                      : (
+                        <ul className="adm-gallery__list">
+                          {list.map((url, i) => (
+                            <li key={url + i} className="adm-gallery__item">
+                              <img src={url} alt="" />
+                              <div className="adm-gallery__tools">
+                                <button type="button" className="adm-btn adm-btn--ghost" disabled={i === 0} onClick={() => set(f.key, move(list, i, -1))} aria-label="Move left">←</button>
+                                <button type="button" className="adm-btn adm-btn--ghost" disabled={i === list.length - 1} onClick={() => set(f.key, move(list, i, 1))} aria-label="Move right">→</button>
+                                <button type="button" className="adm-btn adm-btn--ghost" onClick={() => set(f.key, list.filter((_, j) => j !== i))}>Remove</button>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    <input type="file" accept="image/*" multiple onChange={(e) => { onFiles(f.key, e.target.files); e.target.value = ""; }} />
+                  </div>
+                );
+              })()}
               {f.hint && <span className="adm-field__hint">{f.hint}</span>}
-            </label>
+            </Wrap>
           );
         })}
       </div>

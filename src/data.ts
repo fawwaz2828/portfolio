@@ -29,6 +29,8 @@ export type Project = {
   stack: string[];
   /** Optional screenshot, e.g. "/images/projects/kawalbijak.jpg". Falls back to a generated cover. */
   image?: string;
+  /** More screenshots, shown after the cover in the project page gallery */
+  images?: string[];
   /** Made for university coursework ("campus") or outside it (competitions, freelance, organisations) */
   scope: Scope;
 };

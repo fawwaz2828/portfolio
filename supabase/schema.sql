@@ -26,7 +26,8 @@ create table if not exists public.projects (
   label       text not null default '',          -- e.g. "Civic-tech"
   href        text not null default '',
   stack       text[] not null default '{}',      -- tech chips
-  image       text,                              -- optional screenshot URL
+  image       text,                              -- optional screenshot URL (the cover)
+  images      text[] not null default '{}',      -- more screenshots for the project page gallery
   scope       text not null default 'outside' check (scope in ('campus', 'outside')),
   featured    boolean not null default true,     -- false = small "Also built" list
   sort_order  int not null default 0,

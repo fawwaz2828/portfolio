@@ -1136,6 +1136,13 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .adm-image img { width: min(100%, 320px); aspect-ratio: 16 / 10; object-fit: cover; border: 1px solid var(--line); }
 .adm-image__empty { font-size: 13px; color: var(--muted); }
 .adm-image__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.adm-gallery { display: grid; gap: 10px; }
+.adm-gallery__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.adm-gallery__item { display: grid; gap: 6px; }
+.adm-gallery__item img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border: 1px solid var(--line); }
+.adm-gallery__tools { display: flex; gap: 6px; }
+.adm-gallery__tools .adm-btn { padding: 6px 10px; font-size: 12px; }
+.adm-gallery__tools .adm-btn:disabled { opacity: .35; }
 .adm-editor__foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
 .adm-error { margin: 12px 0 0; padding: 10px 12px; color: #fecaca; background: rgba(239, 68, 68, .12); border: 1px solid rgba(239, 68, 68, .4); font-size: 14px; }
 .adm-toast { margin: 0 0 16px; font-family: var(--mono); font-size: 12px; color: var(--accent); }
@@ -1212,8 +1219,40 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 @media (min-width: 1024px) { .cs__intro { grid-template-columns: minmax(0, 1fr) auto; } }
 .cs__lead { margin: 0; max-width: 52ch; color: var(--fg); font-size: clamp(1.15rem, 1.8vw, 1.6rem); line-height: 1.35; letter-spacing: -.01em; }
 
+.cs__desc { display: grid; gap: 1em; }
+.cs__lead-more { margin: 0; max-width: 64ch; color: var(--muted); font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.7; }
+
 .cs__cover { position: relative; margin-top: clamp(32px, 6vh, 64px); width: 100%; max-width: 880px; }
-.cs__img { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: 60vh; object-fit: cover; object-position: top; border: 1px solid var(--line); }
+
+/* gallery (ProjectGallery.tsx) */
+.gal { display: grid; gap: 12px; }
+.gal__stage { position: relative; }
+.gal__main { display: block; width: 100%; padding: 0; border: 1px solid var(--line); background: #0d0d0d; cursor: zoom-in; overflow: hidden; }
+.gal__img { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: 60vh; object-fit: cover; object-position: top; }
+.gal__arrow {
+  position: absolute; top: 50%; translate: 0 -50%; width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--line); background: rgba(10, 10, 10, .72); color: var(--fg); font-size: 18px;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, color .2s, background .2s;
+}
+.gal__arrow:hover { border-color: var(--accent); color: var(--accent); }
+.gal__arrow--prev { left: 12px; }
+.gal__arrow--next { right: 12px; }
+.gal__count { position: absolute; left: 12px; bottom: 12px; padding: 4px 8px; background: rgba(10, 10, 10, .72); color: var(--fg); pointer-events: none; }
+.gal__thumbs { list-style: none; margin: 0; padding: 0 0 4px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: thin; }
+.gal__thumb { display: block; width: 96px; padding: 0; border: 1px solid var(--line); background: none; opacity: .5; transition: opacity .2s, border-color .2s; }
+.gal__thumb img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+.gal__thumb:hover { opacity: .85; }
+.gal__thumb.is-active { opacity: 1; border-color: var(--accent); }
+@media (max-width: 640px) { .gal__arrow { width: 36px; height: 36px; font-size: 15px; } .gal__thumb { width: 72px; } }
+
+.gal-full { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 56px 16px; background: rgba(5, 5, 5, .94); }
+.gal-full__img { max-width: min(100%, 1600px); max-height: 100%; object-fit: contain; cursor: default; }
+.gal-full__close {
+  position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--line); background: none; color: var(--fg); font-size: 16px; transition: border-color .2s, color .2s;
+}
+.gal-full__close:hover { border-color: var(--accent); color: var(--accent); }
+.gal-full .gal__count { left: 50%; bottom: 16px; translate: -50% 0; }
 
 /* body: aside + numbered sections */
 .cs__layout { display: grid; gap: 40px clamp(40px, 6vw, 96px); margin-top: clamp(48px, 8vh, 96px); align-items: start; }

@@ -1,5 +1,6 @@
 -- Database upgrade for the portfolio. Run once in Supabase → SQL Editor → New query.
--- Adds: Chinese (中文) text for every content table, and case studies for projects.
+-- Adds: Chinese (中文) text for every content table, project write-ups,
+-- full project descriptions and a gallery column (several images per project).
 -- Safe to run again: columns are only added when missing, and the text below
 -- only fills fields that are still empty (your own edits are kept).
 -- An empty 中文 field = the site shows the English text in 中文 mode.
@@ -10,7 +11,8 @@ alter table public.projects
   add column if not exists description_zh text not null default '',
   add column if not exists tag_zh         text not null default '',
   add column if not exists case_study     text not null default '',
-  add column if not exists case_study_zh  text not null default '';
+  add column if not exists case_study_zh  text not null default '',
+  add column if not exists images         text[] not null default '{}';
 
 alter table public.timeline
   add column if not exists date_label_zh text not null default '',
@@ -157,9 +159,7 @@ Flutter 与 Dart（GetX），Mapbox 实时追踪，以及 Firebase：Firestore�
 
 ## 成果
 马来西亚 INDES 2026 第一名。已发布 Android 测试版（v3.0.0）。'),
-  ('fbbb2185-afa9-412e-b3c1-8a74886ad9ac'::uuid, 'fawfitt is a native iOS fitness app. The camera follows the workout, Apple''s Vision framework tracks the body''s pose on the device, and the app counts reps while you train. A small AI backend turns a user''s profile into a weekly plan and answers coaching questions.
-
-## Live workout tracking
+  ('fbbb2185-afa9-412e-b3c1-8a74886ad9ac'::uuid, '## Live workout tracking
 - Pose detection runs on the device with Apple Vision, drawn as a skeleton over the camera preview.
 - Joint angles are measured and smoothed frame by frame.
 - The movement is classified per exercise and every rep is counted.
@@ -172,9 +172,7 @@ Flutter 与 Dart（GetX），Mapbox 实时追踪，以及 Firebase：Firestore�
 - A CrewAI prototype runs the same idea with two agents: a fitness coach and an Apple Health agent.
 
 ## Stack
-SwiftUI, Apple Vision, Core ML and Firebase on iOS; Python, FastAPI, Groq and CrewAI on the server.', 'fawfitt 是一款原生 iOS 健身应用。摄像头跟随训练过程，Apple Vision 在设备端追踪身体姿态，应用在训练时自动计数。一个轻量的 AI 后端根据用户资料生成每周训练计划，并回答训练相关的问题。
-
-## 实时训练追踪
+SwiftUI, Apple Vision, Core ML and Firebase on iOS; Python, FastAPI, Groq and CrewAI on the server.', '## 实时训练追踪
 - 在设备端用 Apple Vision 检测姿态，并在相机画面上叠加骨架。
 - 逐帧测量并平滑关节角度。
 - 按动作类型识别训练动作，并统计每一次重复。
@@ -188,9 +186,7 @@ SwiftUI, Apple Vision, Core ML and Firebase on iOS; Python, FastAPI, Groq and Cr
 
 ## 技术栈
 iOS 端：SwiftUI、Apple Vision、Core ML、Firebase；服务器端：Python、FastAPI、Groq、CrewAI。'),
-  ('10b0fcce-12b9-427e-86ef-96d1d56344c0'::uuid, 'Luna Bridge (SNE-SPIMS) is a student progress and information system for a special-needs school. Admins, teachers and parents each sign in to their own view of the same student records. It was re-platformed from an older Servlet/JSP application to Spring Boot 3.
-
-## Modules
+  ('10b0fcce-12b9-427e-86ef-96d1d56344c0'::uuid, '## Modules
 - Sign-in with role-based access for admins, teachers and parents, decided in one central place.
 - A role-aware dashboard with live analytics.
 - Student roster and profiles, with teacher and parent assignment.
@@ -204,9 +200,7 @@ iOS 端：SwiftUI、Apple Vision、Core ML、Firebase；服务器端：Python、
 Layered from controllers to services (business rules, access control, transactions) to MyBatis data access over MySQL 8. Multi-step writes run in a single transaction, and the access-control and report services are covered by JUnit 5 and Mockito tests.
 
 ## Stack
-Java 17, Spring Boot 3, Spring Security with BCrypt, Thymeleaf, Bootstrap 5, MyBatis, MySQL 8 and HikariCP.', 'Luna Bridge（SNE-SPIMS）是一套面向特殊教育学校的学生成长与信息管理系统。管理员、教师和家长登录后，各自看到同一份学生档案的不同视图。系统从旧的 Servlet/JSP 应用迁移到了 Spring Boot 3。
-
-## 功能模块
+Java 17, Spring Boot 3, Spring Security with BCrypt, Thymeleaf, Bootstrap 5, MyBatis, MySQL 8 and HikariCP.', '## 功能模块
 - 登录与基于角色的权限（管理员、教师、家长），由统一的位置集中判定。
 - 按角色显示的仪表盘，带实时数据分析。
 - 学生名册与档案，可分配教师和家长。
@@ -221,9 +215,7 @@ Java 17, Spring Boot 3, Spring Security with BCrypt, Thymeleaf, Bootstrap 5, MyB
 
 ## 技术栈
 Java 17、Spring Boot 3、Spring Security（BCrypt）、Thymeleaf、Bootstrap 5、MyBatis、MySQL 8、HikariCP。'),
-  ('da0e8340-970b-430b-9f32-8570f3bf877e'::uuid, 'FoodScan is an iOS app that reads a meal from a photo: the dish, its calories, macros, a health score and every ingredient it can see. It keeps a daily log against a personal calorie goal and suggests better choices.
-
-## How a scan works
+  ('da0e8340-970b-430b-9f32-8570f3bf877e'::uuid, '## How a scan works
 - An on-device Core ML model first checks that the photo shows food, so other photos never reach the API.
 - OpenAI''s GPT-4o vision model analyses the photo and returns the dish, calories, macros, health score and ingredients as JSON.
 - The result is saved to the history and compared with today''s calorie goal.
@@ -236,9 +228,7 @@ The app is built as seven agents with one job each: image recognition, calorie e
 The history stays on the device as local JSON. Photos are sent to OpenAI only when a scan or a chat needs them.
 
 ## Stack
-SwiftUI (MVVM), Swift concurrency with async/await and actors, Core ML, Vision, OpenAI GPT-4o and GPT-4o mini, HealthKit.', 'FoodScan 是一款通过照片识别餐食的 iOS 应用：菜品名称、热量、三大营养素、健康评分，以及能看到的每一种食材。它会按个人热量目标记录每日饮食，并给出更好的选择建议。
-
-## 一次扫描的流程
+SwiftUI (MVVM), Swift concurrency with async/await and actors, Core ML, Vision, OpenAI GPT-4o and GPT-4o mini, HealthKit.', '## 一次扫描的流程
 - 设备端的 Core ML 模型先判断照片里是不是食物，非食物照片不会发送到 API。
 - OpenAI 的 GPT-4o 视觉模型分析照片，以 JSON 形式返回菜品、热量、营养素、健康评分和食材。
 - 结果保存到历史记录，并与当天的热量目标进行比较。
@@ -252,9 +242,7 @@ SwiftUI (MVVM), Swift concurrency with async/await and actors, Core ML, Vision, 
 
 ## 技术栈
 SwiftUI（MVVM）、Swift 并发（async/await 与 actor）、Core ML、Vision、OpenAI GPT-4o 与 GPT-4o mini、HealthKit。'),
-  ('a60e7ad1-20b8-4bad-98e5-fbf4b2a50e07'::uuid, 'CrimeWatch is a web platform for analysing crime data to support tourism safety in Yogyakarta, Indonesia. Tourists see a public heatmap and safety tips without signing in; government officials and the police upload data; tourism managers get analytics and predictions; administrators manage users.
-
-## My role
+  ('a60e7ad1-20b8-4bad-98e5-fbf4b2a50e07'::uuid, '## My role
 I worked on the frontend, built with Next.js and TypeScript.
 
 ## Features
@@ -266,9 +254,7 @@ I worked on the frontend, built with Next.js and TypeScript.
 - A public heatmap and location-based recommendations for tourists, with no account needed.
 
 ## Stack
-Next.js 15, React, TypeScript, Tailwind CSS, Axios and Lucide icons. In this version the API layer and the AI predictions are mocked.', 'CrimeWatch 是一个分析犯罪数据的网页平台，用于支持印尼日惹的旅游安全。游客无需登录即可查看公开热力图和安全建议；政府人员和警方上传数据；旅游管理者获得分析和预测；管理员负责管理用户。
-
-## 我的角色
+Next.js 15, React, TypeScript, Tailwind CSS, Axios and Lucide icons. In this version the API layer and the AI predictions are mocked.', '## 我的角色
 负责前端开发，使用 Next.js 和 TypeScript。
 
 ## 功能
@@ -281,9 +267,7 @@ Next.js 15, React, TypeScript, Tailwind CSS, Axios and Lucide icons. In this ver
 
 ## 技术栈
 Next.js 15、React、TypeScript、Tailwind CSS、Axios、Lucide 图标。当前版本中，API 层和 AI 预测为模拟实现。'),
-  ('f3220ffd-366e-434c-9246-4c869a97ac54'::uuid, 'larisin.ai is an AI assistant for Indonesian businesses that replies to customers automatically on WhatsApp and Instagram, built on the WhatsApp Business API and the Instagram Messaging API. As a freelance project, I built its landing page.
-
-## Design
+  ('f3220ffd-366e-434c-9246-4c869a97ac54'::uuid, '## Design
 - A "Greenwave" design system: deep forest-green panels alternating with light cream sections, and lime used sparingly for calls to action and highlights.
 - Space Grotesk for headings and Plus Jakarta Sans for body text.
 - Rounded, organic shapes: an arch-shaped photo collage, pill buttons with a sliding arrow, a rotating "AI 24/7" seal and a scrolling marquee of features.
@@ -293,9 +277,7 @@ Next.js 15、React、TypeScript、Tailwind CSS、Axios、Lucide 图标。当前�
 A hero with the collage and trust badges, the problems businesses face, the solution with a chat screenshot, the features with an analytics dashboard, Lite and Pro pricing, an about section with contact details, and a footer with the business''s legal information.
 
 ## Stack
-Vite, HTML, CSS and JavaScript, deployed on Vercel.', 'larisin.ai 是一款面向印尼商家的 AI 助手，基于 WhatsApp Business API 和 Instagram Messaging API，在 WhatsApp 和 Instagram 上自动回复顾客。作为自由职业项目，我负责制作它的落地页。
-
-## 设计
+Vite, HTML, CSS and JavaScript, deployed on Vercel.', '## 设计
 - "Greenwave"设计系统：深森林绿面板与浅奶油色区块交替，青柠绿只用于行动按钮和重点。
 - 标题使用 Space Grotesk，正文使用 Plus Jakarta Sans。
 - 圆润、有机的造型：拱形照片拼贴、带滑动箭头的胶囊按钮、旋转的"AI 24/7"徽章，以及滚动的功能字幕条。
@@ -306,9 +288,7 @@ Vite, HTML, CSS and JavaScript, deployed on Vercel.', 'larisin.ai 是一款面�
 
 ## 技术栈
 Vite、HTML、CSS、JavaScript，部署在 Vercel 上。'),
-  ('cd5f0889-0130-4cda-b170-4eb125c8c351'::uuid, 'Sustain Energy Solution is a website for smart lighting products and installation services. Visitors browse products and articles, then book a consultation; an admin panel manages consultations, products and articles.
-
-## Features
+  ('cd5f0889-0130-4cda-b170-4eb125c8c351'::uuid, '## Features
 - A product catalogue with product pages, and a blog with search and category filters.
 - Accounts with a consultation dashboard, a booking form, a device list and a profile with avatar upload.
 - An admin panel with statistics and the latest consultations, plus management of consultations, users, products and articles.
@@ -318,9 +298,7 @@ Vite、HTML、CSS、JavaScript，部署在 Vercel 上。'),
 PHP 8.2 with strict types in every file, PHPStan at level 9, the PER-CS code style and Rector. SQL lives only in repositories and always uses bound parameters, form input goes through validated DTOs, every page escapes its output, and every form carries a CSRF token.
 
 ## Stack
-PHP 8, MySQL and Tailwind CSS.', 'Sustain Energy Solution 是一个销售智能照明产品并提供安装服务的网站。访客可以浏览产品和文章，然后预约咨询；管理后台用于管理咨询、产品和文章。
-
-## 功能
+PHP 8, MySQL and Tailwind CSS.', '## 功能
 - 产品目录与产品详情页，以及带搜索和分类筛选的博客。
 - 用户账户：咨询列表、预约表单、设备列表，以及可上传头像的个人资料。
 - 管理后台：统计数据和最新咨询，并可管理咨询、用户、产品和文章。
@@ -331,9 +309,7 @@ PHP 8.2，所有文件启用严格类型，PHPStan 9 级、PER-CS 代码风格�
 
 ## 技术栈
 PHP 8、MySQL、Tailwind CSS。'),
-  ('f1a66f6b-a17d-4db1-aca3-688008e0f0c2'::uuid, 'HerPathway is a desktop mentoring app that connects women with mentors who can help them grow. Mentees apply to a mentor, mentors accept or decline, and once a mentee is accepted the two can chat.
-
-## Features
+  ('f1a66f6b-a17d-4db1-aca3-688008e0f0c2'::uuid, '## Features
 - Find a mentor and apply with a short questionnaire, once per mentor.
 - Mentors review applications; mentees see each one as waiting, accepted or declined.
 - Private chat between a mentor and their accepted mentees, saved to the database and live while the chat server runs.
@@ -348,9 +324,7 @@ Mentees, mentors and organisations, each with their own home screen. Organisatio
 Controllers never touch SQL: every query lives in a DAO layer, and the app creates its own tables the first time it connects. Chat runs over a small socket server.
 
 ## Stack
-Java 17, JavaFX 21, MySQL 8 and Maven.', 'HerPathway 是一款桌面端导师指导应用，帮助女性找到能助她们成长的导师。学员向导师提交申请，导师选择接受或拒绝；申请通过后，双方即可聊天。
-
-## 功能
+Java 17, JavaFX 21, MySQL 8 and Maven.', '## 功能
 - 浏览导师并通过简短问卷提交申请，每位导师只能申请一次。
 - 导师审核申请；学员可以看到每份申请处于等待、已接受还是已拒绝。
 - 导师与已接受学员之间的私聊，消息保存在数据库中，聊天服务器运行时实时显示。
@@ -366,20 +340,84 @@ Java 17, JavaFX 21, MySQL 8 and Maven.', 'HerPathway 是一款桌面端导师指
 
 ## 技术栈
 Java 17、JavaFX 21、MySQL 8、Maven。'),
-  ('7294646e-4e62-44e2-8143-27e4f6fc2985'::uuid, 'The official website of DPM UII, the student representative council of Universitas Islam Indonesia, at https://dpm.uii.ac.id.
-
-## My role
+  ('7294646e-4e62-44e2-8143-27e4f6fc2985'::uuid, '## My role
 I developed and managed the site in WordPress as part of DPM UII''s administration and information media team, where I also worked on content and live coverage of the council''s events.
 
 ## Stack
-WordPress.', '印度尼西亚伊斯兰大学学生代表委员会（DPM UII）的官方网站：https://dpm.uii.ac.id。
-
-## 我的角色
+WordPress.', '## 我的角色
 作为 DPM UII 行政与信息媒体团队的一员，我使用 WordPress 开发并管理该网站，同时负责内容制作和委员会活动的现场报道。
 
 ## 技术栈
 WordPress。')
 ) as v(id, en, zh)
+where p.id = v.id;
+
+-- ── Project descriptions (1–2 paragraphs) and details ──────────────────
+-- Description and tech stack are replaced; tag and type only fill empty fields.
+update public.projects as p set
+  description    = v.en,
+  description_zh = v.zh,
+  stack          = v.stack,
+  tag            = case when p.tag = ''    and v.tag <> ''    then v.tag    else p.tag end,
+  tag_zh         = case when p.tag_zh = '' and v.tag_zh <> '' then v.tag_zh else p.tag_zh end,
+  label          = case when p.label = ''  and v.label <> ''  then v.label  else p.label end
+from (values
+  ('5e9741e7-5e90-4753-ad31-b4e1e3d0c684'::uuid, 'KawalBijak is a civic-tech platform that makes Indonesia''s fiscal and monetary policies easy to follow. Instead of budget figures and jargon, it shows what a policy means for one household: the change in rupiah per month, worked out from the user''s own profile, next to verified reports from citizens on the ground.
+
+I led the frontend in a team of three, building the landing page, the policy feed, the policy pages, the dashboard and the sign-in flow in Next.js 15, React 19 and Supabase. The project won 2nd place at Codelab TechSprint 2026.', 'KawalBijak 是一个公民科技平台，让印尼的财政与货币政策更容易理解。它不再只给出预算数字和专业术语，而是根据用户自己的情况，算出一项政策对一个家庭每月意味着多少印尼盾的变化，并附上来自各地民众、经过核实的反馈。
+
+我在三人团队中担任前端负责人，使用 Next.js 15、React 19 和 Supabase 开发了落地页、政策动态、政策详情页、仪表盘和登录流程。该项目获得 Codelab TechSprint 2026 第二名。', array['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Groq']::text[], '', '', ''),
+  ('66341359-d7c0-49f5-a53d-efcd4fb65da4'::uuid, 'ElectroVice is a Flutter app that connects customers with verified repair technicians nearby, for phones, laptops, appliances, AC units, TVs and vehicles. Booking, live tracking on a map, chat, cost estimates, payment and reviews all happen in one app.
+
+I worked on the frontend, the UI/UX design and QA in a team of three. The app won 1st place at INDES 2026 in Malaysia and was released as an Android beta.', 'ElectroVice 是一款 Flutter 应用，把顾客和附近经过认证的维修师傅连接起来，覆盖手机、电脑、家电、空调、电视和车辆等维修类别。预约、地图实时追踪、聊天、费用估算、付款和评价都在同一个应用里完成。
+
+我在三人团队中负责前端开发、UI/UX 设计和测试。该应用在马来西亚 INDES 2026 获得第一名，并已发布 Android 测试版。', array['Flutter', 'Dart', 'GetX', 'Firebase', 'Mapbox']::text[], '', '', ''),
+  ('fbbb2185-afa9-412e-b3c1-8a74886ad9ac'::uuid, 'fawfitt is a native iOS fitness app that watches your workout through the camera. Apple''s Vision framework tracks the body''s pose on the device, measures joint angles and counts every rep while you train, so no video ever leaves the phone.
+
+A small FastAPI backend adds AI coaching: it builds a personalised weekly plan from the user''s profile, summarises Apple Health calories and answers questions about training, recovery and nutrition.', 'fawfitt 是一款原生 iOS 健身应用，通过摄像头跟踪你的训练。Apple Vision 框架在设备端识别身体姿态、测量关节角度，并在训练时自动计数，视频不会离开手机。
+
+一个轻量的 FastAPI 后端提供 AI 教练功能：根据用户资料生成个性化的每周训练计划，汇总 Apple Health 的卡路里数据，并解答关于训练、恢复和营养的问题。', array['SwiftUI', 'Apple Vision', 'Core ML', 'Firebase', 'Python', 'FastAPI']::text[], '', '', ''),
+  ('10b0fcce-12b9-427e-86ef-96d1d56344c0'::uuid, 'Luna Bridge (SNE-SPIMS) is a student progress and information system for a special-needs school. Admins, teachers and parents each sign in to their own view of the same student records: daily reports, individualised education programmes, behaviour notes, therapy schedules and messages between parents and teachers.
+
+The system was moved from an older Servlet/JSP application to Spring Boot 3, with access rules decided in one central place, multi-step changes saved in a single transaction, and the core services covered by JUnit tests.', 'Luna Bridge（SNE-SPIMS）是一套面向特殊教育学校的学生成长与信息管理系统。管理员、教师和家长各自登录，查看同一份学生档案中与自己相关的内容：每日报告、个别化教育计划、行为记录、治疗排期以及家校消息。
+
+系统从旧的 Servlet/JSP 应用迁移到 Spring Boot 3，权限规则集中管理，多步骤操作在同一事务中保存，核心服务由 JUnit 测试覆盖。', array['Java', 'Spring Boot', 'Spring Security', 'Thymeleaf', 'MyBatis', 'MySQL']::text[], '', '', ''),
+  ('da0e8340-970b-430b-9f32-8570f3bf877e'::uuid, 'FoodScan is an iOS app that reads a meal from a single photo: the dish, its calories, macros, a health score and the ingredients it can see. Each scan goes into a daily log measured against a personal calorie goal, with suggestions for better choices.
+
+An on-device Core ML model first checks that the photo really shows food, then GPT-4o vision does the analysis. The history stays on the phone, and without an API key the app falls back to an on-device classifier and a calorie database.', 'FoodScan 是一款 iOS 应用，只需一张照片就能识别一餐：菜品名称、卡路里、宏量营养素、健康评分以及可见的食材。每次扫描都会记入每日记录，与个人热量目标对比，并给出更健康的建议。
+
+设备端的 Core ML 模型会先确认照片里确实是食物，再由 GPT-4o 视觉模型进行分析。历史记录保存在手机上；没有 API 密钥时，应用会改用设备端分类器和卡路里数据库。', array['SwiftUI', 'Core ML', 'Vision', 'OpenAI GPT-4o', 'HealthKit']::text[], '', '', ''),
+  ('a60e7ad1-20b8-4bad-98e5-fbf4b2a50e07'::uuid, 'CrimeWatch is a web platform that analyses crime data to support tourism safety in Yogyakarta. Tourists can open a public heatmap and safety tips without an account, government and police upload data, tourism managers get trends and predictions, and administrators manage users.
+
+I worked on the frontend in Next.js and TypeScript: role-based sign-in, CSV upload with validation, the interactive heatmap, the trend charts and an AI analytics tab.', 'CrimeWatch 是一个分析犯罪数据、服务日惹旅游安全的网页平台。游客无需注册即可查看公开的热力图和安全提示；政府和警方上传数据；旅游管理者查看趋势与预测；管理员负责管理用户。
+
+我负责使用 Next.js 和 TypeScript 开发前端：基于角色的登录、带校验的 CSV 上传、交互式热力图、趋势图表以及 AI 分析页面。', array['Next.js', 'React', 'TypeScript', 'Tailwind CSS']::text[], '', '', ''),
+  ('f3220ffd-366e-434c-9246-4c869a97ac54'::uuid, 'larisin.ai is an AI assistant for Indonesian businesses that replies to customers automatically on WhatsApp and Instagram. As a freelance project, I designed and built its landing page.
+
+The page follows a "Greenwave" design system of deep green and cream sections with lime highlights, and walks visitors from the problems businesses face to the solution, the features, Lite and Pro pricing and contact details. It is built with Vite and plain HTML, CSS and JavaScript and deployed on Vercel.', 'larisin.ai 是一款面向印尼商家的 AI 助手，可以在 WhatsApp 和 Instagram 上自动回复顾客。作为一个自由职业项目，我设计并开发了它的落地页。
+
+页面采用 "Greenwave" 设计系统：深绿色与米色区块交替，并以青柠色点缀，引导访客依次了解商家的痛点、解决方案、功能、Lite 与 Pro 套餐以及联系方式。页面使用 Vite 和原生 HTML、CSS、JavaScript 构建，部署在 Vercel 上。', array['Vite', 'HTML', 'CSS', 'JavaScript', 'Vercel']::text[], '', '', ''),
+  ('cd5f0889-0130-4cda-b170-4eb125c8c351'::uuid, 'Sustain Energy Solutions is a website for smart lighting products and installation services. Visitors browse a product catalogue and a blog, then create an account to book a consultation and keep track of their devices, while an admin panel manages consultations, users, products and articles.
+
+The code is PHP 8 with strict types, checked by PHPStan at its strictest level. All SQL uses bound parameters, form input goes through validated objects, and every form is protected with a CSRF token.', 'Sustain Energy Solutions 是一个智能照明产品与安装服务网站。访客可以浏览产品目录和博客，注册账号后预约咨询并管理自己的设备；管理后台负责管理咨询、用户、产品和文章。
+
+代码使用开启严格类型的 PHP 8，并通过最高级别的 PHPStan 检查。所有 SQL 都使用参数绑定，表单输入经过校验对象处理，每个表单都带有 CSRF 令牌保护。', array['PHP', 'MySQL', 'Tailwind CSS']::text[], 'Web App · 2024', 'Web 应用 · 2024', 'Web'),
+  ('f1a66f6b-a17d-4db1-aca3-688008e0f0c2'::uuid, 'HerPathway is a desktop mentoring app that connects women with mentors who can help them grow. Mentees apply to a mentor with a short questionnaire, mentors accept or decline, and accepted pairs can chat privately. A forum and a learning library of articles, videos and e-books complete the platform.
+
+It is built with Java 17 and JavaFX on MySQL. Every query lives in a separate data-access layer, chat runs over a small socket server, and passwords are hashed with PBKDF2.', 'HerPathway 是一款桌面端导师指导应用，帮助女性找到能够支持她们成长的导师。学员通过简短问卷向导师申请，导师可以接受或拒绝，配对成功后双方即可私聊。平台还包括论坛以及收录文章、视频和电子书的学习资料库。
+
+应用使用 Java 17 和 JavaFX 开发，数据库为 MySQL。所有查询都放在独立的数据访问层，聊天通过一个小型 socket 服务器实现，密码使用 PBKDF2 加密存储。', array['Java', 'JavaFX', 'MySQL', 'Maven']::text[], 'Desktop App · 2024', '桌面应用 · 2024', 'Desktop'),
+  ('d1367d16-822b-437c-a8b0-36ae4133d091'::uuid, 'Maintance is a design for a building maintenance management app, made as an interactive prototype in Figma.
+
+The prototype can be clicked through from its first screen with the "Open project" button.', 'Maintance 是一款建筑维护管理应用的设计，以 Figma 交互原型的形式完成。
+
+点击"打开项目"按钮，即可从第一个页面开始体验该原型。', array['Figma']::text[], 'UI/UX Design', 'UI/UX 设计', 'Prototype'),
+  ('7294646e-4e62-44e2-8143-27e4f6fc2985'::uuid, 'The official website of DPM UII, the student representative council of Universitas Islam Indonesia, at dpm.uii.ac.id.
+
+I developed and managed the site in WordPress as part of the council''s administration and information media team, where I also worked on content and live coverage of its events.', '印尼伊斯兰大学学生代表委员会（DPM UII）的官方网站：dpm.uii.ac.id。
+
+作为委员会行政与信息媒体团队的一员，我使用 WordPress 开发并管理该网站，同时负责内容制作和活动的实时报道。', array['WordPress']::text[], 'Web Developer · 2025', '网站开发 · 2025', 'Website')
+) as v(id, en, zh, stack, tag, tag_zh, label)
 where p.id = v.id;
 
 -- make the API see the new columns right away

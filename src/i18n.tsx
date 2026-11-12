@@ -101,6 +101,7 @@ const en = {
     contents: "On this page",
     next: "Next project",
     empty: "A full write-up for this project is coming soon.",
+    gallery: { prev: "Previous image", next: "Next image", open: "View full size", close: "Close", image: "Image" },
   },
   login: {
     kicker: "Restricted",
@@ -240,6 +241,7 @@ const zh: Dict = {
     contents: "本页内容",
     next: "下一个项目",
     empty: "该项目的详细介绍即将上线。",
+    gallery: { prev: "上一张", next: "下一张", open: "查看大图", close: "关闭", image: "图片" },
   },
   login: {
     kicker: "限制区域",
