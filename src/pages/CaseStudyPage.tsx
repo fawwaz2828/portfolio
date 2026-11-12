@@ -7,7 +7,6 @@ import { toHref } from "../lib/url";
 import { Link, slugOf, useRouter, type Route } from "../router";
 import { useCover } from "../components/Work";
 import type { Project } from "../data";
-import PixelImage from "../components/motion/PixelImage";
 import CrtBackground from "../components/motion/CrtBackground";
 
 /**
@@ -165,7 +164,7 @@ export default function CaseStudyPage({ slug }: { slug: string }) {
 
       {cover && (
         <motion.div className="cs__cover" initial={{ clipPath: "inset(100% 0 0 0)" }} animate={{ clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.2, ease: EASE, delay: 0.4 }}>
-          <PixelImage src={cover} alt={`${t.work.preview} ${p.name}`} position="top" className="cs__img" />
+          <img src={cover} alt={`${t.work.preview} ${p.name}`} className="cs__img" decoding="async" />
         </motion.div>
       )}
 

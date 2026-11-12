@@ -1213,7 +1213,7 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .cs__lead { margin: 0; max-width: 52ch; color: var(--fg); font-size: clamp(1.15rem, 1.8vw, 1.6rem); line-height: 1.35; letter-spacing: -.01em; }
 
 .cs__cover { position: relative; margin-top: clamp(32px, 6vh, 64px); width: 100%; max-width: 880px; }
-.cs__img { aspect-ratio: 16 / 10; max-height: 60vh; }
+.cs__img { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: 60vh; object-fit: cover; object-position: top; border: 1px solid var(--line); }
 
 /* body: aside + numbered sections */
 .cs__layout { display: grid; gap: 40px clamp(40px, 6vw, 96px); margin-top: clamp(48px, 8vh, 96px); align-items: start; }
