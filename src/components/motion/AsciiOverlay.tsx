@@ -32,7 +32,7 @@ export default function AsciiOverlay({ src }: { src: string }) {
 
   useEffect(() => {
     const canvas = ref.current!, host = canvas.parentElement!;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !matchMedia("(pointer: fine)").matches) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !matchMedia("(any-pointer: fine)").matches) return;
     const ctx = canvas.getContext("2d")!;
     const A = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue("--accent") || "#ef4444");
     // the hands' colour ramp

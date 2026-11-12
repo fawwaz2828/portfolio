@@ -10,12 +10,15 @@ import Footer from "./components/Footer";
 import AboutPage from "./pages/AboutPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
 import Cursor from "./components/motion/Cursor";
 import PixelSky from "./components/motion/PixelSky";
 import SkyBackdrop from "./components/motion/SkyBackdrop";
+import GlitchGate, { type GateHandle } from "./components/motion/GlitchGate";
 import { useAnimations } from "./useAnimations";
 import { useLang } from "./i18n";
-import { RouterContext, normalize, type Route } from "./router";
+import { useContent } from "./content";
+import { ADMIN_PATH, RouterContext, SECRET_PATH, normalize, type Route } from "./router";
 
 /**
  * Page transition after andreas.vision (their numbers): the current page
@@ -25,6 +28,10 @@ import { RouterContext, normalize, type Route } from "./router";
  * frozen as a static copy so the new one can rise over it.
  */
 const DEPTH = 0.8;
+
+/** A new page always starts with the nav bar visible: the hide-on-scroll-down state
+ *  of the previous page (e.g. a long, scrolled /admin) must not carry over. */
+const showTopbar = () => document.querySelector(".topbar")?.classList.remove("hide");
 const IN_OUT = "cubic-bezier(0.65, 0, 0.35, 1)";
 const OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
 
@@ -40,7 +47,8 @@ const PAGES: Record<Route, () => React.ReactNode> = {
   ),
   "/about": () => <AboutPage />,
   "/projects": () => <ProjectsPage />,
-  "/login": () => <LoginPage />,
+  [SECRET_PATH]: () => <LoginPage />,
+  [ADMIN_PATH]: () => <AdminPage />,
 };
 
 /** Static copy of the outgoing page (ids removed; 2D canvases copied over). */
@@ -61,6 +69,7 @@ export default function App() {
   const root = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
+  const gateRef = useRef<GateHandle>(null);
   const [path, setPath] = useState<Route>(() => {
     const p = normalize(location.pathname);
     // Unknown addresses (e.g. the old /contact) fall back to the landing page
@@ -71,12 +80,25 @@ export default function App() {
   const [moving, setMoving] = useState(false);
 
   const { lang } = useLang();
-  const anim = useAnimations(root, lang, path);
+  const { version } = useContent();
+  // re-measure when the database content replaces the bundled copy
+  const anim = useAnimations(root, lang, path, version);
   const animRef = useRef(anim);
   animRef.current = anim;
 
-  const go = useCallback(async (to: Route, push = true) => {
-    if (busy.current || to === pathRef.current) return;
+  const go = useCallback(async (to: Route, push = true, replace = false) => {
+    if (to === pathRef.current) return;
+    // redirect: no transition, and the old address leaves the history
+    if (replace) {
+      history.replaceState({}, "", to);
+      animRef.current.context.revert();
+      pathRef.current = to;
+      flushSync(() => setPath(to));
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => { ScrollTrigger.refresh(); showTopbar(); });
+      return;
+    }
+    if (busy.current) return;
     const card = cardRef.current!;
     if (push) history.pushState({}, "", to);
     const swap = () => {
@@ -86,7 +108,21 @@ export default function App() {
       window.scrollTo(0, 0);
     };
 
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { swap(); return; }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { swap(); showTopbar(); return; }
+
+    // Secret page: heavy glitch → static swallows this page → page swaps underneath → static breaks up
+    if (to === SECRET_PATH && gateRef.current) {
+      busy.current = true;
+      try {
+        await gateRef.current.close();
+        swap();
+        await gateRef.current.open();
+      } finally {
+        requestAnimationFrame(() => { ScrollTrigger.refresh(); showTopbar(); });
+        busy.current = false;
+      }
+      return;
+    }
 
     busy.current = true;
     flushSync(() => setMoving(true));
@@ -119,7 +155,7 @@ export default function App() {
     // The new page's ScrollTriggers were measured while the card was scaled
     // and fixed mid-transition; re-measure now that it is back to normal,
     // otherwise pins (hero → About stage) end up offset with gaps between sections
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    requestAnimationFrame(() => { ScrollTrigger.refresh(); showTopbar(); });
     busy.current = false;
   }, []);
 
@@ -130,7 +166,7 @@ export default function App() {
     return () => removeEventListener("popstate", onPop);
   }, [go]);
 
-  const router = useMemo(() => ({ path, navigate: (to: Route) => go(to) }), [path, go]);
+  const router = useMemo(() => ({ path, navigate: (to: Route, opts?: { replace?: boolean }) => go(to, true, !!opts?.replace) }), [path, go]);
 
   return (
     <RouterContext.Provider value={router}>
@@ -148,6 +184,7 @@ export default function App() {
             </div>
           </div>
         </div>
+        <GlitchGate ref={gateRef} target={cardRef} />
         <Cursor />
       </div>
     </RouterContext.Provider>

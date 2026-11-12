@@ -1,16 +1,16 @@
 import { useEffect, useRef, type PointerEvent } from "react";
 
 /**
- * christendijoux.com project preview: the image comes into view as a canvas
- * that de-pixelates (64 → 2 px blocks, one step every 85 ms) and settles on a
- * halftone version. Hovering opens the original image through a circle that
- * grows from the pointer.
+ * christendijoux.com project preview: the image is shown as a halftone
+ * version on a canvas. Hovering opens the original image through a circle
+ * that grows from the pointer.
+ *
+ * The halftone is drawn as soon as the image has loaded, with no in-between
+ * steps: the original colours are never on screen until the card is hovered.
  *
  * They ship pre-rendered "-halftone.png" files; here the halftone is drawn at
  * runtime (dot size from luminance, in the current --fg colour).
  */
-const STEPS = [64, 32, 16, 8, 4, 2];
-const STEP_MS = 85;
 
 type Props = { src: string; alt: string; className?: string; position?: "top" | "center" };
 
@@ -24,15 +24,19 @@ export default function PixelImage({ src, alt, className = "", position = "cente
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    // Uploaded covers live on another origin (Supabase Storage). Without CORS
+    // the canvas is "tainted" and getImageData() throws, so the halftone never
+    // draws. Ask for CORS first; if the host refuses (a pasted URL), load it
+    // plainly and show grey 4px blocks instead of the halftone.
     const img = new Image();
     img.decoding = "async";
+    let readable = true;
+    const sameOrigin = new URL(src, location.href).origin === location.origin || src.startsWith("data:");
+    if (!sameOrigin) img.crossOrigin = "anonymous";
     img.src = src;
     const small = document.createElement("canvas");
     const sctx = small.getContext("2d", { willReadFrequently: true })!;
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let step = reduce ? STEPS.length : 0; // STEPS.length = halftone (final)
-    let timer = 0, loaded = false, started = false, inView = false;
+    let loaded = false;
 
     // Source rect for an object-fit: cover crop
     const crop = (w: number, h: number) => {
@@ -50,15 +54,18 @@ export default function PixelImage({ src, alt, className = "", position = "cente
       const [sx, sy, sw, sh] = crop(w, h);
       ctx.clearRect(0, 0, w, h);
 
-      if (step < STEPS.length) {
-        // Pixelated pass: downsample, then scale up without smoothing
-        const block = STEPS[step] * dpr;
+      if (!readable) {
+        // No-CORS image: its pixels can't be read, so no halftone. Downsample
+        // and scale up without smoothing, in grey so the colours stay hidden.
+        const block = 4 * dpr;
         const cols = Math.max(1, Math.ceil(w / block)), rows = Math.max(1, Math.ceil(h / block));
         small.width = cols; small.height = rows;
         sctx.imageSmoothingEnabled = true;
         sctx.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
         ctx.imageSmoothingEnabled = false;
+        ctx.filter = "grayscale(1) contrast(1.2)";
         ctx.drawImage(small, 0, 0, cols, rows, 0, 0, cols * block, rows * block);
+        ctx.filter = "none";
         return;
       }
 
@@ -67,7 +74,9 @@ export default function PixelImage({ src, alt, className = "", position = "cente
       const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
       small.width = cols; small.height = rows;
       sctx.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
-      const px = sctx.getImageData(0, 0, cols, rows).data;
+      let px: Uint8ClampedArray;
+      try { px = sctx.getImageData(0, 0, cols, rows).data; }
+      catch { readable = false; draw(); return; } // tainted after all: fall back to pixels
       ctx.fillStyle = getComputedStyle(box).getPropertyValue("--fg").trim() || "#fff";
       ctx.beginPath();
       for (let y = 0; y < rows; y++) {
@@ -84,27 +93,22 @@ export default function PixelImage({ src, alt, className = "", position = "cente
       ctx.fill();
     };
 
-    const run = () => {
-      if (started) return;
-      started = true;
-      const tick = () => {
-        draw();
-        if (step < STEPS.length) { step++; timer = window.setTimeout(tick, STEP_MS); }
-        else box.dataset.revealed = "true";
-      };
-      tick();
+    img.onload = () => { loaded = true; draw(); box.dataset.revealed = "true"; };
+    // host sent no CORS headers: the CORS request fails, so reload without it
+    img.onerror = () => {
+      if (img.crossOrigin === null) return;
+      img.onerror = null;
+      readable = false;
+      img.removeAttribute("crossorigin");
+      img.src = src;
     };
-
-    img.onload = () => { loaded = true; draw(); if (inView) run(); };
-    const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView && loaded) run(); }, { threshold: 0.25 });
-    io.observe(box);
     const ro = new ResizeObserver(draw);
     ro.observe(box);
     // Halftone ink follows the theme
     const mo = new MutationObserver(draw);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-    return () => { clearTimeout(timer); io.disconnect(); ro.disconnect(); mo.disconnect(); img.onload = null; };
+    return () => { ro.disconnect(); mo.disconnect(); img.onload = null; img.onerror = null; };
   }, [src, position]);
 
   // Hover circle grows from the pointer

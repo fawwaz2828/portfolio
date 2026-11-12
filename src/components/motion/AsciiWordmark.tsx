@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { animate, useMotionValue, useReducedMotion, useSpring, type AnimationPlaybackControls } from "motion/react";
 
-const FONT_FAMILY = '"Space Grotesk", system-ui, sans-serif';
+const FONT_FAMILY = '"Space Grotesk Variable", system-ui, sans-serif';
 const INK = "#ffffff";
 const ACCENT = "#ef4444";
 const RADIUS = 130; // px radius of the round lens under the pointer

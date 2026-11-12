@@ -4,8 +4,16 @@ import { createContext, useContext, type AnchorHTMLAttributes, type MouseEvent }
  * Tiny client-side router: three pages, history API, and a navigate() that
  * App wraps in the andreas.vision page transition.
  */
-// "/login" is the secret page: not linked anywhere, opened by tapping "FW" in Morse on the hero sword
-export const ROUTES = ["/", "/about", "/projects", "/login"] as const;
+// SECRET_PATH is the hidden sign-in page: not linked anywhere, opened by tapping
+// "FW" in Morse on the hero sword. A random slug rather than "/login" so it
+// can't be guessed. Change it here only; everything else imports it.
+// (It still ships in the JS bundle: Supabase RLS is what actually protects data.)
+export const SECRET_PATH = "/4zattj3jwf";
+// ADMIN_PATH is the content dashboard, reached after signing in on SECRET_PATH.
+// Also a random slug, and AdminPage sends anyone without an admin session
+// straight back to the home page.
+export const ADMIN_PATH = "/gswvrqc5ykyc";
+export const ROUTES = ["/", "/about", "/projects", SECRET_PATH, ADMIN_PATH] as const;
 export type Route = (typeof ROUTES)[number];
 
 export const normalize = (p: string): Route => {
@@ -13,7 +21,8 @@ export const normalize = (p: string): Route => {
   return (ROUTES as readonly string[]).includes(clean) ? (clean as Route) : "/";
 };
 
-type Ctx = { path: Route; navigate: (to: Route) => void };
+/** replace: swap the page at once, without the transition or a new history entry (redirects). */
+type Ctx = { path: Route; navigate: (to: Route, opts?: { replace?: boolean }) => void };
 export const RouterContext = createContext<Ctx>({ path: "/", navigate: () => {} });
 export const useRouter = () => useContext(RouterContext);
 

@@ -3,7 +3,10 @@ import { AnimatePresence, motion, useAnimationFrame, useMotionValue, useSpring }
 
 type Mode = "idle" | "lock" | "label";
 
-const LOCKABLE = "a, button, [data-cursor-lock]";
+const LOCKABLE = "a, button, [role=button], label:has(> input[type=checkbox]), select, [data-cursor-lock]";
+// Buttons always get the corners, however wide (e.g. full-width FAQ rows);
+// the size cap only stops big image links from being boxed in
+const BUTTONS = "button, [role=button], .btn-solid, .adm-btn, select";
 const MAX_LOCK_W = 340;
 const MAX_LOCK_H = 120;
 const PAD = 8;
@@ -12,19 +15,24 @@ const SPRING = { stiffness: 520, damping: 38, mass: 0.6 };
 /**
  * Targeting reticle: four accent corner brackets.
  * - idle: a small diamond trailing the pointer
- * - lock: snaps around buttons / links / pills and tracks them as they move
+ * - lock: snaps around every button and around links / pills, and tracks them as they move
  * - label: widens and shows a tag (from data-cursor-label) over big targets
  * - data-cursor-plain on an element keeps the normal cursor over it
  */
 export default function Cursor() {
   // Re-evaluated on change (e.g. DevTools device mode, plugging in a mouse) so it never gets stuck off
-  const [enabled, setEnabled] = useState(() => matchMedia("(pointer: fine)").matches);
+  // Uses any-pointer (not the primary one): touchscreen laptops / tablet mode
+  // report a coarse primary pointer even with a mouse attached. Also switches
+  // on at the first real mouse move, whatever the media query says.
+  const [enabled, setEnabled] = useState(() => matchMedia("(any-pointer: fine)").matches);
   useEffect(() => {
-    const mq = matchMedia("(pointer: fine)");
-    const sync = () => setEnabled(mq.matches);
+    const mq = matchMedia("(any-pointer: fine)");
+    const sync = () => { if (mq.matches) setEnabled(true); };
+    const onMouse = (e: PointerEvent) => { if (e.pointerType === "mouse") setEnabled(true); };
     sync();
     mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
+    addEventListener("pointermove", onMouse, { passive: true });
+    return () => { mq.removeEventListener("change", sync); removeEventListener("pointermove", onMouse); };
   }, []);
   const [mode, setMode] = useState<Mode>("idle");
   const [label, setLabel] = useState("");
@@ -73,7 +81,8 @@ export default function Cursor() {
       const lockable = el.closest?.(LOCKABLE);
       if (lockable) {
         const r = lockable.getBoundingClientRect();
-        if (r.width <= MAX_LOCK_W && r.height <= MAX_LOCK_H) {
+        const isButton = lockable.matches(BUTTONS);
+        if ((isButton || r.width <= MAX_LOCK_W) && r.height <= MAX_LOCK_H) {
           target.current = lockable;
           setM("lock");
           return;

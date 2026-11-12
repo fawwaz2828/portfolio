@@ -24,6 +24,10 @@ export default function Contact() {
     const octx = out.getContext("2d")!;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let field: HandsField | null = null, raf = 0, visible = false, alive = true, t0 = 0, progress = 0, ptrTarget = 0;
+    // Scroll gives the target; the pose follows at a capped speed, so even a fast flick
+    // plays the whole rise → touch → logo sequence (≥ ~4s forward) instead of skipping it
+    let shown = 0, lastT = 0;
+    const MAX_FWD = 0.25, MAX_BACK = 0.6; // progress per second
 
     const css = getComputedStyle(document.documentElement);
     const hex = css.getPropertyValue("--accent").trim() || "#ef4444";
@@ -61,6 +65,13 @@ export default function Contact() {
       if (!alive || !visible) return;
       // Ease the pointer lens in and out
       if (field) field.pointer.on += Math.max(-0.08, Math.min(0.08, ptrTarget - field.pointer.on));
+      const now = performance.now(), dt = lastT ? Math.min(0.1, (now - lastT) / 1000) : 0;
+      lastT = now;
+      if (!reduce && shown !== progress) {
+        const d = progress - shown;
+        shown += d > 0 ? Math.min(d, MAX_FWD * dt) : Math.max(d, -MAX_BACK * dt);
+        pose(shown);
+      }
       render();
       raf = requestAnimationFrame(loop);
     };
@@ -73,11 +84,11 @@ export default function Contact() {
       field.restY = 0.66;
       // FW logo appears out of the light once the hands touch
       loadEmblemImage().then((logo) => { if (alive && field) { field.setEmblem(logo); render(true); } }).catch(() => {});
-      pose(reduce ? 0.8 : progress);
+      shown = reduce ? 0.8 : progress; pose(shown);
       size();
     });
 
-    const onProgress = (e: Event) => { progress = (e as CustomEvent<number>).detail; pose(progress); };
+    const onProgress = (e: Event) => { progress = (e as CustomEvent<number>).detail; };
     addEventListener("contact:progress", onProgress);
 
     const io = new IntersectionObserver(([e]) => {
@@ -86,7 +97,7 @@ export default function Contact() {
         if (!t0) t0 = performance.now();
         cancelAnimationFrame(raf);
         raf = requestAnimationFrame(loop);
-      } else cancelAnimationFrame(raf);
+      } else { cancelAnimationFrame(raf); lastT = 0; }
     });
     io.observe(stage);
     const ro = new ResizeObserver(size);
@@ -101,7 +112,7 @@ export default function Contact() {
       ptrTarget = 1;
     };
     const leave = () => { ptrTarget = 0; };
-    const fine = matchMedia("(pointer: fine)").matches;
+    const fine = matchMedia("(any-pointer: fine)").matches;
     if (fine) { stage.addEventListener("pointermove", move); stage.addEventListener("pointerleave", leave); }
 
     return () => {
@@ -151,7 +162,6 @@ export default function Contact() {
               {contact.socials.map((s) => (
                 <li key={s.href}><a href={s.href} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>
               ))}
-              <li><a href={contact.cv} target="_blank" rel="noopener noreferrer">{t.contact.cv} ↗</a></li>
             </ul>
           </div>
         </div>

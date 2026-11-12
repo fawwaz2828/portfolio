@@ -2,7 +2,7 @@ import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useLang } from "../i18n";
 
 /**
- * Slim footer: one row of small print (location, credits, back to top).
+ * Slim footer: one row of small print (location, back to top).
  */
 export default function Footer() {
   const { t } = useLang();
@@ -17,7 +17,6 @@ export default function Footer() {
     <footer className="footer" data-tone="dark">
       <div className="footer__row label">
         <span>{t.footer.based}</span>
-        <span className="footer__built">{t.footer.built}</span>
         <a href="#top" className="footer__top" onClick={toTop}>{t.footer.top} ↑</a>
       </div>
     </footer>

@@ -51,7 +51,6 @@ export default function Topbar() {
     { label: t.nav.home, href: "/" },
     ...sections.map((s) => ({ label: s.label, href: s.to as string })),
     ...contact.socials,
-    { label: t.nav.cv, href: contact.cv },
   ];
 
   useEffect(() => {

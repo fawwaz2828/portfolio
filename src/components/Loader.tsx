@@ -69,7 +69,7 @@ export default function Loader({ onReveal, onDone }: { onReveal: () => void; onD
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#ef4444";
     const isZh = document.documentElement.lang.startsWith("zh");
-    const family = '"Instrument Serif", "Noto Sans SC", Georgia, serif';
+    const family = '"Instrument Serif", "Noto Sans SC Variable", Georgia, serif';
 
     let W = 0, H = 0, lines: Line[] = [];
     const ghosts: Ghost[] = [];

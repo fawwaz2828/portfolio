@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import ProximityText from "./motion/ProximityText";
 import AsciiOverlay from "./motion/AsciiOverlay";
+import SpartanHelmet from "./motion/SpartanHelmet";
 import { tokens, useLang } from "../i18n";
 import { Link } from "../router";
 
@@ -53,6 +54,7 @@ export default function About({ standalone = false }: { standalone?: boolean }) 
           <h2 className="about__heading" aria-label={t.about.heading}>
             <span aria-hidden="true">
               <ProximityText key={lang} text={t.about.heading} min={250} max={800} radius={300} intro={{ delay: 0.05 }} play={revealed} scramble />
+              <SpartanHelmet play={revealed} delay={0.3} />
             </span>
           </h2>
 
@@ -68,7 +70,7 @@ export default function About({ standalone = false }: { standalone?: boolean }) 
             ))}
             {/* Landing page only: the full story lives on /about */}
             {!standalone && (
-              <Link to="/about" className="btn-solid about__more" data-cursor-plain>
+              <Link to="/about" className="btn-solid about__more">
                 {t.about.more} →
               </Link>
             )}

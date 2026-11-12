@@ -20,7 +20,6 @@ const en = {
     close: "Close",
     home: "Home",
     changeLang: "Change language",
-    cv: "Download CV",
   },
   hero: {
     lines: ["Locked in.", "Shipping soon."],
@@ -62,7 +61,6 @@ const en = {
     title: ["Let's build", "something together"],
     lead: "Open to internships, freelance work and collaborations. Tell me about your idea and I'll get back to you.",
     email: "Write to me",
-    cv: "Download CV",
     hint: "Keep scrolling",
     rights: "All rights reserved",
   },
@@ -76,12 +74,10 @@ const en = {
       ["Focus", "Frontend · UI/UX · Mobile · AI"],
       ["Status", "Open to internships & freelance"],
     ] as [string, string][],
-    stats: ["Competition podiums in 2026", "Web, mobile & AI projects shipped", "Languages — ID · EN · 中文"],
     experience: "Experience",
     education: "Education",
     skills: "Skills",
     faq: "Quick answers",
-    cv: "Download CV",
   },
   projectsPage: {
     kicker: "Projects",
@@ -105,7 +101,6 @@ const en = {
   },
   footer: {
     based: "Nanjing, CN · UTC+8",
-    built: "Built with React & GSAP",
     top: "Back to top",
   },
   loader: {
@@ -126,7 +121,6 @@ const zh: Dict = {
     close: "关闭",
     home: "首页",
     changeLang: "切换语言",
-    cv: "下载简历",
   },
   hero: {
     lines: ["全力以赴，", "即将上线。"],
@@ -195,7 +189,6 @@ const zh: Dict = {
     title: ["一起创造", "点什么吧"],
     lead: "欢迎实习、自由职业与合作邀请。告诉我你的想法，我会尽快回复。",
     email: "给我写信",
-    cv: "下载简历",
     hint: "继续滚动",
     rights: "保留所有权利",
   },
@@ -209,12 +202,10 @@ const zh: Dict = {
       ["方向", "前端 · UI/UX · 移动端 · AI"],
       ["状态", "寻找实习与自由职业机会"],
     ] as [string, string][],
-    stats: ["2026 年竞赛获奖", "已上线的网页、移动端与 AI 项目", "语言：印尼语 · 英语 · 中文"],
     experience: "经历",
     education: "教育",
     skills: "技能",
     faq: "常见问题",
-    cv: "下载简历",
   },
   projectsPage: {
     kicker: "项目",
@@ -238,7 +229,6 @@ const zh: Dict = {
   },
   footer: {
     based: "中国南京 · UTC+8",
-    built: "使用 React 与 GSAP 构建",
     top: "回到顶部",
   },
   loader: {

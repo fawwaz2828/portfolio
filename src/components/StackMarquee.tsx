@@ -123,3 +123,17 @@ export default function StackMarquee() {
     </section>
   );
 }
+
+/** The same logos as a still table (used on /about): one cell per tool, logo over its name. */
+export function StackTable() {
+  return (
+    <ul className="stack-table">
+      {STACK.map((icon) => (
+        <li key={icon.slug} className="stack-table__cell">
+          <svg className="stack-table__logo" viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg>
+          <span className="stack-table__name">{nameOf(icon)}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}

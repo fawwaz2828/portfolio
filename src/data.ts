@@ -6,16 +6,10 @@ export const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
-export const stats = [
-  { value: "2×", label: "Competition podiums in 2026" },
-  { value: "10+", label: "Web, mobile & AI projects shipped" },
-  { value: "3", label: "Languages — ID · EN · 中文" },
-];
-
 export const skills = [
   { group: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
   { group: "Mobile", items: ["SwiftUI", "Core ML", "Flutter"] },
-  { group: "Backend", items: ["Java", "Spring Boot", "FastAPI", "MySQL", "Supabase"] },
+  { group: "Backend", items: ["Java", "Spring Boot", "FastAPI", "MySQL", "Supabase", "Firebase"] },
   { group: "AI & Design", items: ["GPT-4o mini", "A2A JSON-RPC 2.0", "Figma", "UI/UX Prototyping"] },
 ];
 
@@ -23,6 +17,9 @@ export type Project = {
   name: string;
   desc: string;
   tag: string;
+  /** Chinese versions from the database; empty falls back to i18n.tsx, then English */
+  descZh?: string;
+  tagZh?: string;
   label: string;
   href: string;
   /** Tech chips shown on the card */
@@ -136,7 +133,6 @@ export const faq = [
 
 export const contact = {
   email: "fawwazwibowo96@gmail.com",
-  cv: "/FawwazAkbarWibowoCV.pdf",
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/fawwaz-wibowo-a69886448" },
     { label: "GitHub", href: "https://github.com/fawwaz2828" },

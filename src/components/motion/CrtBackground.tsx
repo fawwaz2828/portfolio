@@ -309,7 +309,7 @@ export default function CrtBackground({ video, image, tone = 1.6 }: { video?: st
       target.y = (e.clientY - r.top) / r.height;
       mouseOpacity = e.clientY >= r.top && e.clientY <= r.bottom ? 0.5 : 0;
     };
-    const finePointer = matchMedia("(pointer: fine)").matches;
+    const finePointer = matchMedia("(any-pointer: fine)").matches;
     if (finePointer) addEventListener("pointermove", onMove, { passive: true });
 
     const resize = () => {

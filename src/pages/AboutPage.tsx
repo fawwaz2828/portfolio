@@ -2,9 +2,12 @@ import { useState } from "react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProximityText from "../components/motion/ProximityText";
+import CrtBackground from "../components/motion/CrtBackground";
 import AsciiOverlay from "../components/motion/AsciiOverlay";
-import StackMarquee from "../components/StackMarquee";
-import { contact, education, experience, faq, skills, stats, type Entry } from "../data";
+import SpartanHelmet from "../components/motion/SpartanHelmet";
+import { StackTable } from "../components/StackMarquee";
+import { contact, type Entry } from "../data";
+import { useContent } from "../content";
 import { useLang } from "../i18n";
 
 /**
@@ -19,15 +22,16 @@ const rise: Variants = {
 };
 const inView = { initial: "hidden", whileInView: "show", viewport: { once: true, margin: "0px 0px -10% 0px" } } as const;
 
-function SectionHead({ no, title }: { no: string; title: string }) {
+/** "Experience ────◆" */
+function SectionHead({ title }: { title: string }) {
   return (
     <div className="ab-head">
-      <span className="label ab-head__no">[ {no} ]</span>
       <h2 className="ab-head__title" aria-label={title}>
         <span aria-hidden="true">
           <ProximityText text={title} min={250} max={800} radius={260} />
         </span>
       </h2>
+      <span className="ab-head__rule" aria-hidden="true" />
     </div>
   );
 }
@@ -51,7 +55,7 @@ function Question({ q, a, n }: { q: string; a: string; n: number }) {
   const id = `ab-faq-${n}`;
   return (
     <motion.div className="ab-faq" variants={rise} custom={n} {...inView}>
-      <button className="ab-faq__q" aria-expanded={open} aria-controls={id} data-cursor-plain onClick={() => setOpen((o) => !o)}>
+      <button className="ab-faq__q" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
         <span className="label ab-faq__n">{String(n).padStart(2, "0")}</span>
         <span>{q}</span>
         <motion.span className="ab-faq__icon" animate={{ rotate: open ? 45 : 0 }} aria-hidden="true">+</motion.span>
@@ -79,17 +83,23 @@ function Question({ q, a, n }: { q: string; a: string; n: number }) {
 export default function AboutPage() {
   const { t, lang } = useLang();
   const p = t.aboutPage;
+  const { experience, education, skills, faq } = useContent();
 
   return (
     <>
       <section className="sec sec--dark ab" data-tone="dark">
+        {/* Same glitching photo backdrop as the homepage hero, behind the intro only, fading out below it */}
+        <div className="ab-bg" aria-hidden="true">
+          <CrtBackground image="/images/background1.jpg" />
+        </div>
         {/* ── Intro ── */}
         <div className="ab-intro">
           <div className="ab-intro__text">
-            <p className="label ab-kicker"><span className="ab-kicker__bar" aria-hidden="true" />[ 01 ] · {p.kicker}</p>
+            <p className="ab-kicker"><span className="label">{p.kicker}</span></p>
             <h1 className="ab-title" aria-label={t.about.heading}>
               <span aria-hidden="true">
                 <ProximityText key={lang} text={t.about.heading} min={250} max={800} radius={300} intro={{ delay: 0.75 }} />
+                <SpartanHelmet delay={1} />
               </span>
             </h1>
             <div className="ab-bio">
@@ -100,7 +110,6 @@ export default function AboutPage() {
               ))}
             </div>
             <motion.div className="ab-actions" variants={rise} custom={14} initial="hidden" animate="show">
-              <a className="btn-solid" href={contact.cv} target="_blank" rel="noopener noreferrer" data-cursor-plain>{p.cv} ↗</a>
               <a className="ab-link" href={`mailto:${contact.email}`}>{contact.email}</a>
             </motion.div>
           </div>
@@ -127,31 +136,24 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* ── Numbers ── */}
-        <div className="ab-stats">
-          {stats.map((s, i) => (
-            <motion.div key={s.label} className="ab-stat" variants={rise} custom={i} {...inView}>
-              <span className="ab-stat__value">{s.value}</span>
-              <span className="ab-stat__label label">{p.stats[i] ?? s.label}</span>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* ── Experience ── */}
+        {/* Experience | Education side by side on wide screens */}
+        <div className="ab-cols">
         <div className="ab-block">
-          <SectionHead no="02" title={p.experience} />
+          <SectionHead title={p.experience} />
           <Timeline entries={experience} />
         </div>
 
         {/* ── Education ── */}
         <div className="ab-block">
-          <SectionHead no="03" title={p.education} />
+          <SectionHead title={p.education} />
           <Timeline entries={education} />
         </div>
+        </div>
 
-        {/* ── Skills ── */}
+        {/* Skills | FAQ side by side on wide screens */}
+        <div className="ab-cols">
         <div className="ab-block">
-          <SectionHead no="04" title={p.skills} />
+          <SectionHead title={p.skills} />
           <div className="ab-skills">
             {skills.map((g, i) => (
               <motion.div key={g.group} className="ab-skill" variants={rise} custom={i} {...inView}>
@@ -164,13 +166,19 @@ export default function AboutPage() {
 
         {/* ── FAQ ── */}
         <div className="ab-block">
-          <SectionHead no="05" title={p.faq} />
+          <SectionHead title={p.faq} />
           <div className="ab-faqs">
             {faq.map((f, i) => <Question key={f.q} q={f.q} a={f.a} n={i + 1} />)}
           </div>
         </div>
+        </div>
+
+        {/* ── Tech stack: a still table here, the moving band stays on the landing page ── */}
+        <div className="ab-block">
+          <SectionHead title={t.stack.label} />
+          <StackTable />
+        </div>
       </section>
-      <StackMarquee />
     </>
   );
 }

@@ -11,7 +11,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollSmoother);
  * so ScrollSmoother is created before every ScrollTrigger and everything
  * is reverted automatically on unmount.
  */
-export function useAnimations(scope: RefObject<HTMLDivElement | null>, lang: Lang, page: string) {
+export function useAnimations(scope: RefObject<HTMLDivElement | null>, lang: Lang, page: string, contentVersion = 0) {
   // Returned so a page change can tear everything down *before* React swaps
   // the DOM (pin-spacers wrap pinned sections and would break the unmount)
   return useGSAP(
@@ -219,9 +219,11 @@ export function useAnimations(scope: RefObject<HTMLDivElement | null>, lang: Lan
         ScrollTrigger.create({
           trigger: ".contact",
           start: "top top",
-          end: "+=150%",
+          // Long pin (5 screens) so a quick flick can't skip the rise → touch → logo sequence;
+          // scrub 2 = the scroll progress lags ~2s; Contact also caps how fast the pose advances
+          end: "+=500%",
           pin: true,
-          scrub: true,
+          scrub: 2,
           onUpdate: (st) => send(st.progress),
           onRefresh: (st) => send(st.progress),
         });
@@ -271,6 +273,6 @@ export function useAnimations(scope: RefObject<HTMLDivElement | null>, lang: Lan
     },
     // Text changes with the language and the page changes the DOM, so every
     // split / pin is rebuilt on either
-    { scope, dependencies: [lang, page], revertOnUpdate: true }
+    { scope, dependencies: [lang, page, contentVersion], revertOnUpdate: true }
   );
 }

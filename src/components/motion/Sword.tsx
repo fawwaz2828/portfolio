@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { useRouter } from "../../router";
+import { SECRET_PATH, useRouter } from "../../router";
 
 /**
  * Detailed line-art longsword lying horizontally, point to the left.
@@ -13,7 +13,7 @@ import { useRouter } from "../../router";
  * Holding before release charges the strike (power 1 → 3 over 1.5s): a
  * bigger thrust, a screen shake and a larger blast in the background.
  *
- * Secret: tapping "FW" in Morse (··−· ·−−) opens the hidden /login page.
+ * Secret: tapping "FW" in Morse (··−· ·−−) opens the hidden sign-in page (SECRET_PATH).
  * A press under 250ms is a dot, a longer hold a dash (the sword "charges"
  * while held); a pause over 1.5s starts the sequence again.
  */
@@ -118,7 +118,7 @@ export default function Sword({ delay = 0.6 }: { delay?: number }) {
     m.seq = (m.seq + (held >= DASH_MS ? "-" : ".")).slice(-SECRET.length);
     if (m.seq === SECRET) {
       m.seq = "";
-      navigate("/login");
+      navigate(SECRET_PATH);
     }
   };
 

@@ -1,14 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "motion/react";
-import CrtBackground from "../components/motion/CrtBackground";
 import ProximityText from "../components/motion/ProximityText";
+import CrtBackground from "../components/motion/CrtBackground";
 import { useLang } from "../i18n";
-import { Link } from "../router";
+import { Link, useRouter, ADMIN_PATH } from "../router";
+import { supabase } from "../lib/supabase";
+import { checkAdmin } from "../lib/auth";
 
 /**
- * Secret /login page, reached by tapping "FW" in Morse on the hero sword.
- * UI only for now: the site has no backend, so submitting just says so.
- * Wire `onSubmit` to a real auth provider when one is chosen.
+ * Secret sign-in page (SECRET_PATH in router.tsx), reached by tapping "FW" in Morse on the hero sword.
+ * Signs in with Supabase (email + password); admins go on to ADMIN_PATH.
  */
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -16,15 +17,32 @@ export default function LoginPage() {
   const { t, lang } = useLang();
   const l = t.login;
   const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const { navigate } = useRouter();
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMsg(l.pending);
+    if (!supabase) { setMsg(l.pending); return; }
+    const fd = new FormData(e.currentTarget);
+    setBusy(true); setMsg("");
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: String(fd.get("email") ?? "").trim(),
+      password: String(fd.get("password") ?? ""),
+    });
+    if (error || !data.user) { setBusy(false); setMsg("Wrong email or password."); return; }
+    if (!(await checkAdmin(data.user.id))) {
+      await supabase.auth.signOut();
+      setBusy(false); setMsg("This account has no admin access.");
+      return;
+    }
+    setBusy(false);
+    navigate(ADMIN_PATH);
   };
 
   return (
     <section className="sec sec--dark lg" data-tone="dark">
-      {/* The dungeon photo is dark already, so less gamma than the other backgrounds */}
+      {/* Same CRT/glitch photo backdrop as the homepage hero, on the red gothic hall.
+          The photo is dark already, so less gamma than the default */}
       <CrtBackground image="/images/secret.jpg" tone={0.75} />
       <motion.div
         className="lg__panel"
@@ -49,7 +67,7 @@ export default function LoginPage() {
             <span className="label">{l.password}</span>
             <input type="password" name="password" autoComplete="current-password" required />
           </label>
-          <button type="submit" className="btn-solid" data-cursor-plain>{l.submit} →</button>
+          <button type="submit" className="btn-solid" disabled={busy}>{busy ? "…" : `${l.submit} →`}</button>
           {msg && <p className="lg__msg" role="status">{msg}</p>}
         </form>
 

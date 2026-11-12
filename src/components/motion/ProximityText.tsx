@@ -17,7 +17,7 @@ export function useProximityWeight(
 
   useEffect(() => {
     const root = ref.current;
-    if (!root || reduce || matchMedia("(hover: none)").matches) return;
+    if (!root || reduce || !matchMedia("(any-pointer: fine)").matches) return;
 
     const chars = Array.from(root.querySelectorAll<HTMLElement>(".char"));
     const weights = chars.map(() => min);
