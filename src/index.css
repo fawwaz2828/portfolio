@@ -485,21 +485,7 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; }
 /* One word per line: hovered letters get bolder (wider), so a single line
    would wrap mid-hover and jump; stacked, each word has room to grow */
 .work__title .ptext__word { display: block; width: max-content; }
-/* Armored horse under the heading (ArmoredHorse.tsx) */
-.horse {
-  /* vh cap: the desktop intro column is a fixed screen height */
-  display: block; width: clamp(240px, min(30vw, 34vh), 440px); height: auto; margin-top: clamp(16px, 3vh, 32px);
-  overflow: visible; stroke: var(--fg); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round;
-}
-/* filled parts hide the lines behind them (far legs under the body, body under the armor) */
-.horse__fill { fill: color-mix(in srgb, var(--bg) 85%, transparent); }
-/* stroke-opacity, not opacity: the draw-in animates opacity inline */
-.horse__fine { stroke-width: 1; stroke-opacity: .7; }
-.horse__far { stroke-opacity: .75; }
-.horse__rivet { stroke-width: 3; }
-.horse__accent { stroke: var(--accent); }
-.horse__accent.horse__fill { fill: color-mix(in srgb, var(--accent) 20%, transparent); }
-/* Heraldic shield under the heading (CrestShield.tsx), same line style as the horse it replaced */
+/* Heraldic shield under the heading (CrestShield.tsx), same line style as the sword and helmet */
 .crest {
   /* sized by height; vh cap: the desktop intro column is a fixed screen height */
   display: block; height: clamp(200px, min(30vw, 31vh), 380px); width: auto; margin-top: clamp(16px, 3vh, 32px);
