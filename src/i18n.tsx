@@ -59,7 +59,7 @@ const en = {
   contact: {
     kicker: "Contact",
     title: ["Let's build", "something together"],
-    lead: "Open to internships, freelance work and collaborations. Tell me about your idea and I'll get back to you.",
+    lead: "Open to internships, freelance work and collaborations. Tell me about your idea and I'll get back to you. My CV is available on request.",
     email: "Write to me",
     hint: "Keep scrolling",
     rights: "All rights reserved",
@@ -187,7 +187,7 @@ const zh: Dict = {
   contact: {
     kicker: "联系",
     title: ["一起创造", "点什么吧"],
-    lead: "欢迎实习、自由职业与合作邀请。告诉我你的想法，我会尽快回复。",
+    lead: "欢迎实习、自由职业与合作邀请。告诉我你的想法，我会尽快回复。如需简历，欢迎发邮件索取。",
     email: "给我写信",
     hint: "继续滚动",
     rights: "保留所有权利",
